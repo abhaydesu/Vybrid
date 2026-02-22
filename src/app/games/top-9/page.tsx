@@ -21,9 +21,7 @@ export default function TopNinePage() {
             <span className="text-sm font-semibold text-ink/60">
               Answer Slot
             </span>
-            <span className="text-lg font-semibold text-ink">
-              #{index + 1}
-            </span>
+            <span className="text-lg font-semibold text-ink">#{index + 1}</span>
           </div>
         ))}
       </section>

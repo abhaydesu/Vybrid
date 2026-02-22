@@ -1,4 +1,7 @@
+import Link from "next/link";
+
 import GameCard from "./components/GameCard";
+import { offlineGames } from "@/lib/offlineGames";
 
 const games = [
   {
@@ -38,6 +41,38 @@ export default function Home() {
         {games.map((game) => (
           <GameCard key={game.title} {...game} />
         ))}
+      </section>
+
+      <section className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-2xl font-semibold text-ink">Offline Games</h2>
+          <p className="text-sm text-ink/60">
+            Ready-to-play classics with clear rules and minimal setup.
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {offlineGames.map((game) => (
+            <Link
+              key={game.title}
+              href={`/games/offline/${game.slug}`}
+              className="flex h-full flex-col gap-3 rounded-3xl border border-blue-100 bg-white p-5 shadow-neon transition-transform hover:-translate-y-1"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-[0.3em] text-ink/40">
+                  Offline
+                </span>
+                <span className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[0.65rem] font-semibold text-blue-700">
+                  Rules →
+                </span>
+              </div>
+              <h3 className="text-lg font-semibold text-ink">{game.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-ink/70">
+                {game.description}
+              </p>
+              <p className="mt-3 text-sm text-ink/60">{game.details}</p>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section className="rounded-3xl border border-blue-100 bg-surface/80 p-6 backdrop-blur">

@@ -5,9 +5,7 @@ export default function PassTheBombPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-blue-700">
           Game Mode
         </p>
-        <h1 className="mt-3 text-hero font-semibold text-ink">
-          Pass the Bomb
-        </h1>
+        <h1 className="mt-3 text-hero font-semibold text-ink">Pass the Bomb</h1>
         <p className="mt-3 text-base text-ink/70">
           Timer-based word guessing with escalating tension and sound cues.
         </p>
