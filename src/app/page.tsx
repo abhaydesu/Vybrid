@@ -3,7 +3,14 @@ import Link from "next/link";
 import GameCard from "./components/GameCard";
 import { offlineGames } from "@/lib/offlineGames";
 
-const games = [
+type GameCardAccent = "blue" | "sky" | "ice" | "navy";
+
+const games: Array<{
+  title: string;
+  description: string;
+  href: string;
+  accent: GameCardAccent;
+}> = [
   {
     title: "Top 9",
     description:
