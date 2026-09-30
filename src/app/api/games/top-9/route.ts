@@ -1,41 +1,73 @@
 import { NextResponse } from "next/server";
 
-import { connectToDatabase } from "@/lib/mongoose";
-import { Top9Question, Top9QuestionData } from "@/models/Top9Question";
+import { allQuestions } from "@/lib/top9/bank";
+import { top9Categories, TOTAL_BOARDS } from "@/lib/top9/categories";
+import { dealDeck } from "@/lib/top9/deal";
 
-const sampleQuestions: Top9QuestionData[] = [
-  {
-    prompt: "Name something you might forget to pack for a holiday.",
-    answers: [
-      { label: "Phone charger", points: 38 },
-      { label: "Toothbrush", points: 24 },
-      { label: "Passport", points: 18 },
-      { label: "Socks", points: 10 },
-      { label: "Swimsuit", points: 6 },
-      { label: "Wallet", points: 4 },
-    ],
-  },
-  {
-    prompt: "Name a snack people always want during game night.",
-    answers: [
-      { label: "Pizza", points: 30 },
-      { label: "Chips", points: 26 },
-      { label: "Nachos", points: 16 },
-      { label: "Popcorn", points: 12 },
-      { label: "Cookies", points: 9 },
-      { label: "Candy", points: 7 },
-    ],
-  },
-];
+const CATEGORY_IDS = new Set(top9Categories.map((c) => c.id));
 
-export async function GET() {
-  const connection = await connectToDatabase();
+/** Category list with board counts. */
+export function GET() {
+  return NextResponse.json({ total: TOTAL_BOARDS, categories: top9Categories });
+}
 
-  if (!connection) {
-    return NextResponse.json(sampleQuestions);
+/**
+ * Deals a deck for one game.
+ * Body: { categories: string[], exclude?: string[], perCategory?: number }
+ */
+export async function POST(request: Request) {
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Expected a JSON body." },
+      { status: 400 },
+    );
   }
 
-  const questions = await Top9Question.find().lean();
+  const {
+    categories,
+    exclude = [],
+    perCategory = 8,
+  } = (body ?? {}) as {
+    categories?: unknown;
+    exclude?: unknown;
+    perCategory?: unknown;
+  };
 
-  return NextResponse.json(questions.length ? questions : sampleQuestions);
+  const validCategories =
+    Array.isArray(categories) &&
+    categories.length > 0 &&
+    categories.length <= CATEGORY_IDS.size &&
+    categories.every((c) => typeof c === "string" && CATEGORY_IDS.has(c));
+  const validExclude =
+    Array.isArray(exclude) &&
+    exclude.length <= 20000 &&
+    exclude.every((id) => typeof id === "string");
+  const count = Number(perCategory);
+
+  if (
+    !validCategories ||
+    !validExclude ||
+    !Number.isInteger(count) ||
+    count < 1 ||
+    count > 30
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Send 1+ known categories, an exclude list of ids, and perCategory 1–30.",
+      },
+      { status: 400 },
+    );
+  }
+
+  const { deck, recycled } = dealDeck(allQuestions(), {
+    categories: categories as string[],
+    exclude: exclude as string[],
+    perCategory: count,
+  });
+
+  return NextResponse.json({ deck, recycled });
 }

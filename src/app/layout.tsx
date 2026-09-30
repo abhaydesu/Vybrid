@@ -1,22 +1,32 @@
-import type { Metadata } from "next";
-import { Geist_Mono, Inter } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
+
+import NavDock from "./components/NavDock";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Vybrid | Digital Game Master",
+  title: "Vybrid | Game night, sorted",
   description:
-    "Vybrid is a digital game master for offline party games with timers, sound cues, and scorekeeping.",
+    "A one-stop shop for party games with friends and family. Rules, timers, word lists and scorekeeping, all in one place.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#f6f3ed",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -26,12 +36,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} ${geistMono.variable} antialiased bg-cloud text-ink`}
-      >
-        <div className="min-h-screen bg-radial-glow vybrid-grid">
-          {children}
-        </div>
+      <body className={`${bricolage.variable} ${dmSans.variable}`}>
+        <NavDock />
+        <div className="pb-32 md:pb-16">{children}</div>
       </body>
     </html>
   );

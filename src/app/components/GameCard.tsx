@@ -1,57 +1,71 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Link from "next/link";
 
+import type { CatalogGame } from "@/lib/games";
+import Character from "./Character";
+import { ArrowIcon, ClockIcon, PhoneIcon, UsersIcon } from "./Icons";
+import Studs from "./Studs";
+
 interface GameCardProps {
-  title: string;
-  description: string;
-  href: string;
-  accent: "blue" | "sky" | "ice" | "navy";
+  game: CatalogGame;
+  featured?: boolean;
 }
 
-const accentMap: Record<GameCardProps["accent"], string> = {
-  blue: "from-blue-100 via-surface to-surface",
-  sky: "from-blue-50 via-surface to-surface",
-  ice: "from-blue-100/70 via-surface to-surface",
-  navy: "from-blue-300/40 via-surface to-surface",
-};
-
-export default function GameCard({
-  title,
-  description,
-  href,
-  accent,
-}: GameCardProps) {
+export default function GameCard({ game, featured = false }: GameCardProps) {
   return (
-    <motion.div
-      whileHover={{ y: -6, scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 220, damping: 18 }}
-      className="h-full"
+    <Link
+      href={game.href}
+      className={`brick brick-press tone-${game.tone} group mt-3 flex h-full flex-col p-5 ${
+        featured ? "sm:p-6" : ""
+      }`}
     >
-      <Link
-        href={href}
-        className={`flex h-full flex-col gap-4 rounded-3xl border border-blue-100 bg-gradient-to-br ${accentMap[accent]} p-6 shadow-neon`}
-      >
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-ink/60">
-            Game
+      <Studs count={featured ? 3 : 2} />
+
+      <div className="flex items-start gap-3">
+        <div className="min-w-0 flex-1">
+          <span className="chip">
+            {game.kind === "on-screen" ? (
+              <>
+                <PhoneIcon width={13} height={13} /> Plays on screen
+              </>
+            ) : (
+              "Play in person"
+            )}
           </span>
-          <span className="rounded-full border border-blue-100 px-3 py-1 text-[0.65rem] font-semibold text-ink/70">
-            Ready
+          <h3
+            className={`mt-3 font-display font-extrabold leading-[1.05] tracking-tight ${
+              featured ? "text-3xl sm:text-4xl" : "text-2xl"
+            }`}
+          >
+            {game.title}
+          </h3>
+        </div>
+        <Character
+          kind={game.character}
+          tone={game.tone}
+          bare
+          className={`shrink-0 -mb-2 -mt-1 transition-transform duration-300 ease-[var(--ease-bounce)] group-hover:-rotate-6 group-hover:scale-105 ${
+            featured ? "h-28 w-24 sm:h-32 sm:w-28" : "h-24 w-20"
+          }`}
+        />
+      </div>
+
+      <p className="mt-2 text-[0.95rem] leading-snug text-ink/75">
+        {game.tagline}
+      </p>
+
+      <div className="mt-auto flex items-end justify-between gap-3 pt-5">
+        <div className="flex flex-wrap gap-1.5">
+          <span className="chip">
+            <UsersIcon width={13} height={13} /> {game.players}
+          </span>
+          <span className="chip">
+            <ClockIcon width={13} height={13} /> {game.duration}
           </span>
         </div>
-        <div>
-          <h3 className="text-hero font-semibold text-ink">{title}</h3>
-          <p className="mt-3 text-sm leading-6 text-ink/70 sm:text-base">
-            {description}
-          </p>
-        </div>
-        <div className="mt-auto text-sm font-semibold text-blue-700">
-          Launch →
-        </div>
-      </Link>
-    </motion.div>
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border-2 border-[var(--tone-dark)] bg-white/80 shadow-[inset_0_1px_0_#fff] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+          <ArrowIcon width={18} height={18} />
+        </span>
+      </div>
+    </Link>
   );
 }

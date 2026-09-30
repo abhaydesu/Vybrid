@@ -1,0 +1,82 @@
+{
+  "source": "ProtoQA (Boratko et al., 2020), CC BY 4.0",
+  "url": "https://github.com/iesl/protoqa-data",
+  "total": 8463,
+  "categories": [
+    {
+      "id": "words",
+      "label": "Words & phrases",
+      "count": 202
+    },
+    {
+      "id": "food",
+      "label": "Food & drink",
+      "count": 663
+    },
+    {
+      "id": "love",
+      "label": "Love & dating",
+      "count": 439
+    },
+    {
+      "id": "family",
+      "label": "Family & kids",
+      "count": 899
+    },
+    {
+      "id": "work",
+      "label": "Work & school",
+      "count": 774
+    },
+    {
+      "id": "holidays",
+      "label": "Holidays & parties",
+      "count": 418
+    },
+    {
+      "id": "travel",
+      "label": "Travel & outdoors",
+      "count": 432
+    },
+    {
+      "id": "sports",
+      "label": "Sports & games",
+      "count": 256
+    },
+    {
+      "id": "health",
+      "label": "Health & body",
+      "count": 474
+    },
+    {
+      "id": "animals",
+      "label": "Animals & nature",
+      "count": 535
+    },
+    {
+      "id": "popculture",
+      "label": "TV, movies & fame",
+      "count": 710
+    },
+    {
+      "id": "money",
+      "label": "Shopping & money",
+      "count": 417
+    },
+    {
+      "id": "home",
+      "label": "Home & everyday",
+      "count": 747
+    },
+    {
+      "id": "everyday",
+      "label": "Anything goes",
+      "count": 2808
+    },
+    {
+      "id": "adult",
+      "label": "After dark (18+)",
+      "count": 169
+    }
+  ]
+}

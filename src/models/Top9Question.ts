@@ -1,30 +1,24 @@
 import mongoose, { Schema } from "mongoose";
 
-export interface Top9Answer {
-  label: string;
-  points: number;
-}
+import type { Top9Answer, Top9Question as Top9QuestionData } from "@/lib/top9/types";
 
-export interface Top9QuestionData {
-  prompt: string;
-  answers: Top9Answer[];
-}
-
-export interface Top9QuestionDoc extends mongoose.Document, Top9QuestionData {
-  prompt: string;
-  answers: Top9Answer[];
-}
+export type { Top9QuestionData };
 
 const AnswerSchema = new Schema<Top9Answer>(
   {
-    label: { type: String, required: true },
+    text: { type: String, required: true },
     points: { type: Number, required: true },
+    aliases: { type: [String], default: undefined },
   },
   { _id: false },
 );
 
-const Top9QuestionSchema = new Schema<Top9QuestionDoc>(
+const Top9QuestionSchema = new Schema<Top9QuestionData>(
   {
+    id: { type: String, required: true, unique: true },
+    categories: { type: [String], required: true },
+    adult: { type: Boolean, default: undefined },
+    source: { type: String, enum: ["survey", "original"], required: true },
     prompt: { type: String, required: true },
     answers: { type: [AnswerSchema], required: true },
   },
@@ -33,4 +27,4 @@ const Top9QuestionSchema = new Schema<Top9QuestionDoc>(
 
 export const Top9Question =
   mongoose.models.Top9Question ||
-  mongoose.model<Top9QuestionDoc>("Top9Question", Top9QuestionSchema);
+  mongoose.model<Top9QuestionData>("Top9Question", Top9QuestionSchema);

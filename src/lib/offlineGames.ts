@@ -1,8 +1,14 @@
+import type { CharacterKind, Tone } from "./games";
+
 export interface OfflineGame {
   slug: string;
   title: string;
   description: string;
   details: string;
+  tone: Tone;
+  character: CharacterKind;
+  players: string;
+  duration: string;
   props: string[];
   steps: string[];
   extraComponents: string[];
@@ -15,6 +21,10 @@ export const offlineGames: OfflineGame[] = [
     description:
       "Social deduction with secret roles, day debates, and night actions.",
     details: "Great for larger groups. One moderator keeps the game moving.",
+    tone: "purple",
+    character: "detective",
+    players: "6–15",
+    duration: "20–40 min",
     props: ["Roles on paper", "Timer"],
     steps: [
       "Setup: choose one moderator (doesn't play). Prepare role slips: 1-2 Mafia, 1 Doctor, 1 Seer (optional), rest Villagers.",
@@ -35,6 +45,10 @@ export const offlineGames: OfflineGame[] = [
     title: "Charades",
     description: "Act out prompts without speaking while your team guesses.",
     details: "Best played in teams with quick rounds and score tracking.",
+    tone: "orange",
+    character: "actor",
+    players: "4+",
+    duration: "15–30 min",
     props: ["Slips of paper", "Bowl", "Timer"],
     steps: [
       "Setup: prepare a stack of prompts (movies, actions, objects) on slips and place them in a bowl or hat.",
@@ -51,21 +65,31 @@ export const offlineGames: OfflineGame[] = [
     title: "Pictionary",
     description: "Draw the prompt while your team races to guess it.",
     details: "Use a whiteboard or shared pad; rotate artists each round.",
+    tone: "blue",
+    character: "artist",
+    players: "4+",
+    duration: "20–40 min",
     props: ["Paper or whiteboard", "Markers", "Timer"],
     steps: [
-      "Setup: prepare prompts or use a random word list. Provide a drawing surface: whiteboard, paper pad, or tablet.",
-      "Teams: split into teams and decide drawing order.",
-      "Round: the drawer receives a prompt and has a fixed time (e.g., 60s) to draw it. No letters, numbers, or verbal hints allowed.",
-      "Guessing: teammates shout guesses; if they guess the prompt before time runs out, the team scores a point.",
-      "Scoring & Variants: allow passes (with penalty), or play in a chained mode where correct guesses allow continued drawing. Rotate drawers each round.",
+      "Setup: split into 2–4 teams and grab paper or a whiteboard. Tap Play now to set up teams; the phone handles words, timing and score.",
+      "Pick a word: the other team secretly picks a word for the drawer, from three suggestions or by writing their own. Skipped suggestions aren't used up.",
+      "Pass the phone: the pickers hand the phone to the drawer, who sees the word and starts the clock.",
+      "Draw: start the clock. No letters, numbers, gestures or talking. Just drawing. Hold the peek button if you forget the word.",
+      "Guess: teammates shout guesses. Tap “They got it!” for a point, or let time run out.",
+      "Steals: with 3+ teams, if the drawing team misses, a team that didn't pick the word can shout it and take the point.",
+      "Win: after every team has drawn the chosen number of turns, the team with the most points wins.",
     ],
-    extraComponents: ["Random word generator", "Sketch timer"],
+    extraComponents: ["Word picker", "Round timer", "Scoreboard"],
   },
   {
     slug: "two-truths-one-lie",
     title: "Two Truths & a Lie",
     description: "Share three statements and let the group spot the lie.",
     details: "Perfect icebreaker; keep statements short for faster rounds.",
+    tone: "pink",
+    character: "fibber",
+    players: "3+",
+    duration: "10–20 min",
     props: ["None"],
     steps: [
       "Turn order: pick a player to start; proceed clockwise.",
@@ -81,6 +105,10 @@ export const offlineGames: OfflineGame[] = [
     title: "Hot Seat",
     description: "Teammates describe a prompt while one player guesses.",
     details: "Keep a rolling score and rotate the guesser each round.",
+    tone: "red",
+    character: "hotseat",
+    players: "4+",
+    duration: "15–30 min",
     props: ["List of prompts", "Timer"],
     steps: [
       "Setup: create a stack of prompts. One player sits in the 'hot seat' facing away from the screen or with eyes closed.",
@@ -96,6 +124,10 @@ export const offlineGames: OfflineGame[] = [
     description:
       "Write as many category items as possible before time runs out.",
     details: "Fast-paced and competitive; great for 3+ players.",
+    tone: "green",
+    character: "writer",
+    players: "3+",
+    duration: "10–20 min",
     props: ["Notebook", "Pens", "Timer"],
     steps: [
       "Setup: choose a category and give each player a sheet or notebook.",

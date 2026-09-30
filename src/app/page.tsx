@@ -1,96 +1,169 @@
 import Link from "next/link";
 
+import Character from "./components/Character";
 import GameCard from "./components/GameCard";
-import { offlineGames } from "@/lib/offlineGames";
+import { GridIcon } from "./components/Icons";
+import SectionHeading from "./components/SectionHeading";
+import Studs from "./components/Studs";
+import SurpriseButton from "./components/SurpriseButton";
+import { allGames, onScreenGames } from "@/lib/games";
 
-type GameCardAccent = "blue" | "sky" | "ice" | "navy";
-
-const games: Array<{
-  title: string;
-  description: string;
-  href: string;
-  accent: GameCardAccent;
-}> = [
+const steps = [
   {
-    title: "Top 9",
-    description:
-      "Family Feud-style rounds with hidden answers and hype reveals.",
-    href: "/games/top-9",
-    accent: "blue",
+    tone: "blue",
+    title: "Pick a game",
+    body: "Browse by how you want to play and what you have lying around.",
   },
   {
-    title: "Pass the Bomb",
-    description: "Rapid-fire word guessing with a ticking timer and chaos.",
-    href: "/games/pass-the-bomb",
-    accent: "sky",
+    tone: "yellow",
+    title: "Check the kit",
+    body: "Every game lists exactly what you need. Usually just this phone.",
   },
-];
+  {
+    tone: "green",
+    title: "Play right here",
+    body: "Timers, word decks, rules and scores live on the page.",
+  },
+] as const;
 
 export default function Home() {
-  return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-12 px-6 pb-16 pt-12 sm:px-10">
-      <header className="flex flex-col gap-6">
-        <div className="inline-flex w-fit items-center gap-3 rounded-full border border-blue-100 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-ink/60">
-          Vybrid Control Hub
-        </div>
-        <div className="flex flex-col gap-4">
-          <h1 className="text-mega font-semibold tracking-tight text-ink">
-            Digital Game Master for high-energy party nights.
-          </h1>
-          <p className="max-w-2xl text-base leading-7 text-ink/70 sm:text-lg">
-            Launch a game, keep score, and trigger timers from one screen. Built
-            for offline play with a bold, readable UI.
-          </p>
-        </div>
-      </header>
+  const inPerson = allGames.filter((game) => game.kind === "offline");
 
-      <section className="grid gap-6 md:grid-cols-2">
-        {games.map((game) => (
-          <GameCard key={game.title} {...game} />
-        ))}
+  return (
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 pt-6 sm:px-6 md:pt-10">
+      {/* Hero */}
+      <section className="grid items-center gap-8 md:grid-cols-[1.15fr_1fr]">
+        <div>
+          <p className="chip tone-green mb-5 bg-white">
+            <span className="h-2 w-2 rounded-full bg-[#25b35f]" />
+            {allGames.length} games, zero setup
+          </p>
+          <h1 className="font-display text-[clamp(2.75rem,11vw,5.25rem)] font-extrabold leading-[0.95] tracking-[-0.035em]">
+            <span className="tone-yellow brick brick-flat inline-block -rotate-2 px-3 py-0.5">
+              Game
+            </span>{" "}
+            night,
+            <br />
+            <span className="scribble-underline">sorted.</span>
+          </h1>
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-ink-soft">
+            Rules, timers, word decks and scorekeeping for your next hangout.
+            Everything the game needs is on this one page.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/games" className="btn tone-red">
+              <GridIcon width={18} height={18} />
+              Browse games
+            </Link>
+            <SurpriseButton className="btn tone-yellow" />
+          </div>
+        </div>
+
+        <HeroCrew />
       </section>
 
-      <section className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <h2 className="text-2xl font-semibold text-ink">Offline Games</h2>
-          <p className="text-sm text-ink/60">
-            Ready-to-play classics with clear rules and minimal setup.
-          </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {offlineGames.map((game) => (
-            <Link
-              key={game.title}
-              href={`/games/offline/${game.slug}`}
-              className="flex h-full flex-col gap-3 rounded-3xl border border-blue-100 bg-white p-5 shadow-neon transition-transform hover:-translate-y-1"
+      {/* How it works */}
+      <section>
+        <SectionHeading eyebrow="How it works" title="Three taps to chaos" />
+        <ol className="mt-8 grid gap-6 sm:grid-cols-3">
+          {steps.map((step, i) => (
+            <li
+              key={step.title}
+              className={`brick brick-flat tone-${step.tone} flex items-start gap-4 p-5`}
             >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-[0.3em] text-ink/40">
-                  Offline
-                </span>
-                <span className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[0.65rem] font-semibold text-blue-700">
-                  Rules →
-                </span>
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-[var(--tone-dark)] bg-white font-display text-lg font-extrabold shadow-[0_3px_0_var(--tone-dark)]">
+                {i + 1}
+              </span>
+              <div>
+                <h3 className="font-display text-lg font-bold">{step.title}</h3>
+                <p className="mt-1 text-sm leading-snug text-ink/70">
+                  {step.body}
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-ink">{game.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-ink/70">
-                {game.description}
-              </p>
-              <p className="mt-3 text-sm text-ink/60">{game.details}</p>
-            </Link>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* On-screen games */}
+      <section>
+        <SectionHeading
+          eyebrow="Plays on screen"
+          title="Pass the phone around"
+          description="The whole game runs on your device. Just gather everyone round."
+        />
+        <div className="mt-8 grid gap-7 md:grid-cols-2">
+          {onScreenGames.map((game) => (
+            <GameCard key={game.slug} game={game} featured />
           ))}
         </div>
       </section>
 
-      <section className="rounded-3xl border border-blue-100 bg-surface/80 p-6 backdrop-blur">
-        <div className="flex flex-col gap-2">
-          <h2 className="text-xl font-semibold text-ink">Host Controls</h2>
-          <p className="text-sm text-ink/60">
-            Scores, timers, and sound effects will appear here once game logic
-            is wired up.
-          </p>
+      {/* In-person games */}
+      <section>
+        <SectionHeading
+          eyebrow="Play in person"
+          title="Classics, with a co-host"
+          description="Clear rules plus built-in timers and prompt decks, so nobody has to be the one on their phone."
+        />
+        <div className="mt-8 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+          {inPerson.map((game) => (
+            <GameCard key={game.slug} game={game} />
+          ))}
+        </div>
+      </section>
+
+      {/* Bottom CTA */}
+      <section className="brick tone-purple mt-2 overflow-visible p-6 sm:p-10">
+        <Studs count={4} />
+        <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+              Can&apos;t decide?
+            </h2>
+            <p className="mt-2 max-w-sm text-ink/75">
+              Let fate pick. Tap the button and we&apos;ll drop you straight
+              into a game.
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Character
+              kind="fibber"
+              tone="purple"
+              bare
+              className="h-24 w-20 animate-wobble"
+            />
+            <SurpriseButton className="btn tone-purple" label="Roll a game" />
+          </div>
         </div>
       </section>
     </main>
+  );
+}
+
+function HeroCrew() {
+  return (
+    <div className="relative mx-auto aspect-[5/4] w-full max-w-md">
+      {/* Floating bricks */}
+      <span className="brick brick-flat tone-blue absolute left-[4%] top-[6%] h-12 w-20 rotate-[-10deg]" />
+      <span className="brick brick-flat tone-pink absolute right-[2%] top-[2%] h-10 w-10 rotate-12" />
+      <span className="brick brick-flat tone-green absolute bottom-[6%] right-[10%] h-9 w-16 rotate-6" />
+
+      <Character
+        kind="host"
+        tone="yellow"
+        className="animate-bob absolute left-[30%] top-[4%] w-[40%]"
+      />
+      <Character
+        kind="artist"
+        tone="blue"
+        className="animate-bob absolute bottom-0 left-0 w-[38%] [animation-delay:-1.2s]"
+      />
+      <Character
+        kind="bomber"
+        tone="red"
+        className="animate-bob absolute bottom-[2%] right-0 w-[38%] [animation-delay:-2.4s]"
+      />
+    </div>
   );
 }

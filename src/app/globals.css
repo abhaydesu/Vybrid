@@ -1,33 +1,466 @@
 @import "tailwindcss";
 
-:root {
-  --background: #f7faff;
-  --foreground: #0b132b;
-  --surface: #ffffff;
-  --accent: #2563eb;
-  --accent-soft: #7dd3fc;
+/* ------------------------------------------------------------------ */
+/* Design tokens                                                       */
+/* ------------------------------------------------------------------ */
+
+@theme {
+  --color-paper: #f6f3ed;
+  --color-paper-deep: #ece6db;
+  --color-ink: #1f1d2b;
+  --color-ink-soft: #55526a;
+  --color-line: #dcd4c6;
+
+  --font-display: var(--font-bricolage), ui-rounded, system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+
+  --ease-bounce: cubic-bezier(0.3, 0.7, 0.4, 1.5);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/*
+ * Every colored surface reads from five tone variables:
+ *   --tone-light / --tone / --tone-dark  → pastel brick faces + edge
+ *   --tone-solid / --tone-edge           → saturated buttons + accents
+ */
+:root,
+.tone-white {
+  --tone-light: #ffffff;
+  --tone: #faf8f4;
+  --tone-dark: #d9d1c3;
+  --tone-solid: #1f1d2b;
+  --tone-edge: #000000;
+}
+.tone-red {
+  --tone-light: #ffe3de;
+  --tone: #ffb4a8;
+  --tone-dark: #e2604e;
+  --tone-solid: #ff5a45;
+  --tone-edge: #c63a28;
+}
+.tone-orange {
+  --tone-light: #ffe8d1;
+  --tone: #ffc58f;
+  --tone-dark: #e3863a;
+  --tone-solid: #ff8a1f;
+  --tone-edge: #c9620a;
+}
+.tone-yellow {
+  --tone-light: #fff4c4;
+  --tone: #ffe078;
+  --tone-dark: #d9a91c;
+  --tone-solid: #ffc61a;
+  --tone-edge: #c99400;
+}
+.tone-green {
+  --tone-light: #dcf7e2;
+  --tone: #a8e7b7;
+  --tone-dark: #3fae5f;
+  --tone-solid: #25b35f;
+  --tone-edge: #178443;
+}
+.tone-blue {
+  --tone-light: #dbefff;
+  --tone: #a5d5ff;
+  --tone-dark: #4a97dc;
+  --tone-solid: #2f8cff;
+  --tone-edge: #1a64c7;
+}
+.tone-purple {
+  --tone-light: #ece4ff;
+  --tone: #c9b8ff;
+  --tone-dark: #8a6ddf;
+  --tone-solid: #7c5cff;
+  --tone-edge: #5836d6;
+}
+.tone-pink {
+  --tone-light: #ffe1ee;
+  --tone: #ffb3d4;
+  --tone-dark: #dc6199;
+  --tone-solid: #ff4f9a;
+  --tone-edge: #cc2b72;
+}
+
+@layer base {
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+
+html {
+  background: var(--color-paper);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), system-ui, sans-serif;
-  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--color-paper);
+  background-image: radial-gradient(
+    circle,
+    var(--color-line) 1.3px,
+    transparent 1.6px
+  );
+  background-size: 22px 22px;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
 * {
   -webkit-tap-highlight-color: transparent;
 }
 
-.vybrid-grid {
-  background-image: linear-gradient(to right, rgba(37, 99, 235, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(37, 99, 235, 0.08) 1px, transparent 1px);
-  background-size: 28px 28px;
+:focus-visible {
+  outline: 3px solid var(--color-ink);
+  outline-offset: 3px;
+  border-radius: 0.75rem;
+}
+
+::selection {
+  background: #ffe078;
+  color: var(--color-ink);
+}
+
+}
+
+@layer components {
+/* ------------------------------------------------------------------ */
+/* Brick: the core colored, glossy 3D surface                          */
+/* ------------------------------------------------------------------ */
+
+.brick {
+  --lift: 6px;
+  position: relative;
+  isolation: isolate;
+  border-radius: 1.75rem;
+  border: 2px solid var(--tone-dark);
+  background: linear-gradient(
+    180deg,
+    var(--tone-light) 0%,
+    var(--tone) 70%
+  );
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.7),
+    inset 0 -3px 0 rgb(0 0 0 / 0.05),
+    0 var(--lift) 0 var(--tone-dark),
+    0 calc(var(--lift) + 10px) 24px -10px
+      color-mix(in oklab, var(--tone-dark) 70%, transparent);
+  transition:
+    transform 0.22s var(--ease-bounce),
+    box-shadow 0.22s var(--ease-bounce);
+}
+
+/* Soft grain for the frosted/premium feel */
+.brick::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.brick-flat {
+  --lift: 4px;
+  border-radius: 1.25rem;
+}
+
+@media (hover: hover) {
+  .brick-press:hover {
+    --lift: 9px;
+    transform: translateY(-3px);
+  }
+}
+
+.brick-press:active {
+  --lift: 1px;
+  transform: translateY(5px);
+  transition-duration: 0.06s;
+}
+
+/* Divider inside a brick, like the stacked rows in a list card */
+.brick-divider {
+  height: 2px;
+  background: var(--tone-dark);
+  opacity: 0.35;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.6);
+}
+
+/* ------------------------------------------------------------------ */
+/* Lego studs                                                          */
+/* ------------------------------------------------------------------ */
+
+.studs {
+  position: absolute;
+  top: -11px;
+  left: 1.5rem;
+  display: flex;
+  gap: 0.6rem;
+  pointer-events: none;
+}
+
+.stud {
+  width: 28px;
+  height: 11px;
+  border: 2px solid var(--tone-dark);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(180deg, var(--tone-light), var(--tone));
+  box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.7);
+}
+
+/* ------------------------------------------------------------------ */
+/* Buttons                                                             */
+/* ------------------------------------------------------------------ */
+
+.btn {
+  --press: 5px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0.75rem 1.35rem;
+  border-radius: 1.1rem;
+  border: 2px solid var(--tone-edge);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--tone-solid) 78%, white) 0%,
+    var(--tone-solid) 55%
+  );
+  color: white;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 0 rgb(0 0 0 / 0.18);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.45),
+    0 var(--press) 0 var(--tone-edge),
+    0 calc(var(--press) + 8px) 16px -8px
+      color-mix(in oklab, var(--tone-edge) 80%, transparent);
+  transition:
+    transform 0.18s var(--ease-bounce),
+    box-shadow 0.18s var(--ease-bounce);
+  user-select: none;
+  cursor: pointer;
+}
+
+.tone-yellow.btn,
+.tone-yellow .btn:not([class*="tone-"]),
+.tone-white.btn {
+  color: var(--color-ink);
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.4);
+}
+
+.tone-white.btn {
+  background: linear-gradient(180deg, #ffffff, #f3efe7);
+  border-color: var(--tone-dark);
+  box-shadow:
+    inset 0 2px 0 #ffffff,
+    0 var(--press) 0 var(--tone-dark),
+    0 calc(var(--press) + 8px) 16px -8px rgb(80 60 30 / 0.25);
+}
+
+@media (hover: hover) {
+  .btn:hover {
+    --press: 7px;
+    transform: translateY(-2px);
+  }
+}
+
+.btn:active,
+.btn[data-pressed="true"] {
+  --press: 0px;
+  transform: translateY(5px);
+  transition-duration: 0.06s;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-sm {
+  --press: 3px;
+  min-height: 2.25rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 0.8rem;
+  font-size: 0.85rem;
+}
+
+.btn-sm:active,
+.btn-sm[data-pressed="true"] {
+  transform: translateY(3px);
+}
+
+/* ------------------------------------------------------------------ */
+/* Keycap: the nav + toggle chip style                                 */
+/* ------------------------------------------------------------------ */
+
+.keycap {
+  --press: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 1rem;
+  border: 1.5px solid var(--color-line);
+  background: linear-gradient(180deg, #ffffff 0%, #f5f1ea 100%);
+  color: var(--color-ink-soft);
+  font-weight: 600;
+  box-shadow:
+    inset 0 1.5px 0 #ffffff,
+    inset 0 -2px 0 rgb(0 0 0 / 0.03),
+    0 var(--press) 0 #d8cfc0,
+    0 calc(var(--press) + 6px) 12px -6px rgb(70 50 20 / 0.25);
+  transition:
+    transform 0.18s var(--ease-bounce),
+    box-shadow 0.18s var(--ease-bounce),
+    color 0.15s,
+    background 0.15s;
+  cursor: pointer;
+  user-select: none;
+}
+
+@media (hover: hover) {
+  .keycap:hover {
+    --press: 6px;
+    transform: translateY(-2px);
+    color: var(--color-ink);
+  }
+}
+
+.keycap:active {
+  --press: 0px;
+  transform: translateY(4px);
+  transition-duration: 0.06s;
+}
+
+.keycap[aria-current="page"],
+.keycap[aria-pressed="true"] {
+  --press: 2px;
+  transform: translateY(2px);
+  color: var(--color-ink);
+  border-color: var(--tone-dark);
+  background: linear-gradient(180deg, var(--tone-light), var(--tone));
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.7),
+    0 var(--press) 0 var(--tone-dark),
+    0 6px 10px -6px var(--tone-dark);
+}
+
+.tone-white.keycap[aria-pressed="true"] {
+  color: white;
+  border-color: #000;
+  background: linear-gradient(180deg, #3a3748, var(--color-ink));
+  box-shadow:
+    inset 0 1.5px 0 rgb(255 255 255 / 0.18),
+    0 var(--press) 0 #000,
+    0 6px 10px -6px rgb(0 0 0 / 0.5);
+}
+
+/* ------------------------------------------------------------------ */
+/* Small bits                                                          */
+/* ------------------------------------------------------------------ */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--tone-dark);
+  background: rgb(255 255 255 / 0.65);
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  box-shadow: inset 0 1px 0 #fff;
+}
+
+.inset-well {
+  border-radius: 1.1rem;
+  border: 2px solid color-mix(in oklab, var(--tone-dark) 55%, transparent);
+  background: rgb(255 255 255 / 0.7);
+  box-shadow: inset 0 3px 0 rgb(0 0 0 / 0.05);
+}
+
+.field {
+  width: 100%;
+  min-height: 3rem;
+  border-radius: 0.9rem;
+  border: 2px solid var(--color-line);
+  background: white;
+  padding: 0.6rem 0.9rem;
+  font-size: 1rem; /* ≥16px avoids iOS zoom on focus */
+  box-shadow: inset 0 3px 0 rgb(0 0 0 / 0.04);
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--color-ink);
+}
+
+.scribble-underline {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'%3E%3Cpath d='M2 8c30-6 60-6 98-2s70 3 98-3' fill='none' stroke='%23ff5a45' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.35em;
+  padding-bottom: 0.1em;
+}
+
+.safe-bottom {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+}
+
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(200px) rotate(540deg);
+    opacity: 0;
+  }
+}
+
+.animate-wobble {
+  animation: wobble 3.2s ease-in-out infinite;
+}
+
+.animate-bob {
+  animation: bob 3.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
