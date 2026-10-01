@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 
+import ImposterGame from "@/app/components/imposter/ImposterGame";
 import PictionaryGame from "@/app/components/pictionary/PictionaryGame";
 import Top9Game from "@/app/components/top9/Top9Game";
 import { STORAGE_KEYS } from "@/lib/storageKeys";
@@ -30,6 +31,12 @@ export const playableGames: Record<string, PlayableGame> = {
     storageKey: STORAGE_KEYS.top9,
     detailsHref: "/games/top-9",
     pitch: "Name your teams, pick a host (or don't), and bring up the board.",
+  },
+  imposter: {
+    Game: ImposterGame,
+    storageKey: STORAGE_KEYS.imposter,
+    detailsHref: "/games/offline/imposter",
+    pitch: "Add everyone in seating order and deal the cards.",
   },
 };
 

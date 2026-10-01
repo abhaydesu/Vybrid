@@ -37,6 +37,15 @@ _Last updated: 2026-09-30. Nothing is committed yet: all of the work below is st
 - **Scores:** editable scoreboard, game-over screen with a list of every word, rematch.
 - **Code:** `src/store/pictionaryStore.ts`, `src/app/components/pictionary/*`, `src/lib/words/*`.
 
+### Imposter: done (`/games/offline/imposter` → `/play`)
+- **Modelled on the "Imposter Who?" app:** pass the phone round, everyone sees the secret word except the imposter, one-word clues round the circle, then vote.
+- **Setup:** 3–15 players in seating order, 1–3 imposters (capped so the crew always outnumber them), optional clue timer, imposter hint (none / category / hint word), Classic or **Undercover** mode (imposter gets a similar word and doesn't know), and opt-in **troll rounds** (about 1 in 8 rounds, everyone is the imposter).
+- **Round flow:** pass → card reveal → clues (random first player, "Forgot your word?" hold-to-peek) → vote → verdict. With several imposters you keep voting until all are caught; one wrong vote and the imposters win. Caught imposters get one guess at the word to steal the round (Classic only).
+- **Scores:** crew +1 each for a catch, imposter +2 for getting away, +1 for a steal. Editable scores, game-over standings and a round list.
+- **Word bank:** 669 words in 20 categories (`src/lib/imposter/words.ts`), each with a one-word hint. Desi categories (Desi khana, Bollywood movies, Filmy stars, Cricket, Festivals, Shaadi season, Desi ghar, Desi life, Desi TV & OTT, Places in India, Gali & bazaar, Desi brands, Mythology) are the default "Desi mix"; Food, Animals, Jobs, Places, Everyday things, Hollywood & shows and Sports are the classic ones. Played words aren't repeated until a category runs out.
+- **Verified:** Playwright run at phone size covered the card deal, hints, reload mid-game, crew win, imposter win, ending a game early, 2 imposters in Undercover, troll round and the clue timer. No console errors. `tsc`, `eslint` and `next build` pass.
+- **Code:** `src/store/imposterStore.ts`, `src/app/components/imposter/*`, `src/lib/imposter/words.ts`.
+
 ### Top 9 (Family Feud style): nearly done (`/games/top-9` → `/play`)
 - **Two ways to play:**
   - **Host mode:** the host sees the answers and taps tiles to reveal them. A **room view** hides the answers when the phone is shown around.

@@ -82,6 +82,30 @@ export const offlineGames: OfflineGame[] = [
     extraComponents: ["Word picker", "Round timer", "Scoreboard"],
   },
   {
+    slug: "imposter",
+    title: "Imposter",
+    description:
+      "Everyone gets the secret word except one. Give clues, then find the faker.",
+    details:
+      "One phone, passed around the circle. Loaded with desi words: biryani, Sharma ji ka beta, DDLJ and plenty more.",
+    tone: "green",
+    character: "fibber",
+    players: "3–15",
+    duration: "10–30 min",
+    props: ["None"],
+    steps: [
+      "Setup: add everyone in seating order, pick categories and how many imposters. Tap Play now to start.",
+      "Deal: pass the phone round. Each player taps to see their card, then hides it and passes on. Everyone sees the same secret word, except the imposter, whose card just says Imposter (with a hint, if you turned hints on).",
+      "Clues: starting with the player the phone picks, go round the circle. Each person says one word about the secret word. Too obvious and the imposter learns it; too vague and you look suspicious.",
+      "Vote: count down from three and everyone points at who they think the imposter is. Tap the player with the most votes.",
+      "Caught: if it was the imposter, they get one last chance to guess the word and steal the round. With more than one imposter, keep voting until they're all found.",
+      "Got away: vote out an innocent player (or give up) and the imposters win the round.",
+      "Scoring: the crew get 1 point each for catching the imposter. An imposter who gets away scores 2, or 1 for stealing with the right guess.",
+      "Variants: in Undercover mode the imposter gets a similar word and doesn't know they're the imposter. Troll rounds sometimes make everyone the imposter.",
+    ],
+    extraComponents: ["Card dealer", "Clue timer", "Scoreboard"],
+  },
+  {
     slug: "two-truths-one-lie",
     title: "Two Truths & a Lie",
     description: "Share three statements and let the group spot the lie.",
