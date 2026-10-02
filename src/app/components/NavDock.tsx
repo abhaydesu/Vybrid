@@ -21,6 +21,16 @@ function isActive(pathname: string, href: string) {
 
 export default function NavDock() {
   const pathname = usePathname();
+  // The tab tapped last, shown as current straight away so the key doesn't
+  // bounce back up while the next page loads. Dropped once the route changes.
+  const [pending, setPending] = useState<{ href: string; from: string } | null>(null);
+  const current = (href: string) =>
+    pending && pending.from === pathname ? pending.href === href : isActive(pathname, href);
+  const select = (e: React.MouseEvent, href: string) => {
+    // Modified clicks open a new tab, so this page stays where it is.
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    setPending({ href, from: pathname });
+  };
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -41,20 +51,21 @@ export default function NavDock() {
           <Logo />
           <nav
             aria-label="Main"
-            className="flex items-center gap-2 rounded-[1.6rem] border-2 border-line bg-white p-2 pb-3 shadow-[0_10px_30px_-14px_rgb(0_0_0/0.18)]"
+            className="nav-tray flex items-center gap-2 p-2 pb-3"
           >
             {items.map(({ href, label, tone, Icon }) => (
               <Link
                 key={href}
                 href={href}
-                aria-current={isActive(pathname, href) ? "page" : undefined}
-                className={`keycap tone-${tone} h-11 px-4 text-[0.95rem]`}
+                aria-current={current(href) ? "page" : undefined}
+                onClick={(e) => select(e, href)}
+                className={`navkey lego-${tone} h-11 px-4 text-[0.95rem]`}
               >
                 <Icon width={18} height={18} />
                 {label}
               </Link>
             ))}
-            <SurpriseButton className="keycap tone-pink h-11 px-4 text-[0.95rem]" />
+            <SurpriseButton className="navkey navkey-accent lego-pink h-11 px-4 text-[0.95rem]" />
           </nav>
         </div>
       </header>
@@ -68,13 +79,14 @@ export default function NavDock() {
         aria-label="Main"
         className="safe-bottom fixed inset-x-0 bottom-0 z-40 px-3 md:hidden"
       >
-        <div className="mx-auto grid max-w-md grid-cols-4 gap-2 rounded-[1.75rem] border-2 border-line bg-white/90 p-2 pb-3 shadow-[0_-4px_30px_-12px_rgb(0_0_0/0.22)] backdrop-blur-md">
+        <div className="nav-tray mx-auto grid max-w-md grid-cols-4 gap-2 p-2 pb-3 shadow-[0_-8px_24px_-12px_rgb(0_0_0/0.25)]">
           {items.map(({ href, label, tone, Icon }) => (
             <Link
               key={href}
               href={href}
-              aria-current={isActive(pathname, href) ? "page" : undefined}
-              className={`keycap tone-${tone} h-14 flex-col gap-0.5 text-[0.72rem]`}
+              aria-current={current(href) ? "page" : undefined}
+              onClick={(e) => select(e, href)}
+              className={`navkey lego-${tone} h-14 flex-col gap-0.5 text-[0.72rem]`}
             >
               <Icon />
               {label}
@@ -82,7 +94,7 @@ export default function NavDock() {
           ))}
           <SurpriseButton
             compact
-            className="keycap tone-pink h-14 flex-col gap-0.5 text-[0.72rem]"
+            className="navkey navkey-accent lego-pink h-14 flex-col gap-0.5 text-[0.72rem]"
           />
         </div>
       </nav>

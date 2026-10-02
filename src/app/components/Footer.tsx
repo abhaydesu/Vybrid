@@ -5,52 +5,101 @@ import { SITE } from "@/lib/site";
 import Mascot, { type MascotKind, type MascotMood } from "./Mascot";
 import { LogoMark } from "./Logo";
 
-const FRIENDS: Array<{ kind: MascotKind; mood: MascotMood; color?: string }> = [
-  { kind: "uncle", mood: "happy", color: "#2f7bff" },
-  { kind: "samosa", mood: "cheer" },
-  { kind: "chai", mood: "wink" },
-  { kind: "laddoo", mood: "happy" },
-  { kind: "didi", mood: "happy", color: "#ff4f9a" },
-  { kind: "golgappa", mood: "sweaty" },
-]
+type Friend = { kind: MascotKind; mood: MascotMood; color?: string; rot: number; lift?: number };
 
-export default function Footer() {
+// The gang, tumbled in a heap on the floor: a back row sitting in the gaps of a front row.
+const BACK_ROW: Friend[] = [
+  { kind: "dice", mood: "shocked", color: "#ffc233", rot: -14 },
+  { kind: "kulfi", mood: "happy", color: "#ff8fb8", rot: 9 },
+  { kind: "uncle", mood: "happy", color: "#2f7bff", rot: -6 },
+  { kind: "jalebi", mood: "cheer", rot: 16 },
+  { kind: "didi", mood: "wink", color: "#ff4f9a", rot: -10 },
+  { kind: "mango", mood: "happy", rot: 7 },
+  { kind: "dice", mood: "shifty", color: "#2fc48d", rot: 18 },
+  { kind: "kulfi", mood: "wink", color: "#7c5cff", rot: -12 },
+  { kind: "uncle", mood: "shocked", color: "#ff7a2f", rot: 5 },
+  { kind: "jalebi", mood: "happy", rot: -16 },
+];
+const FRONT_ROW: Friend[] = [
+  { kind: "samosa", mood: "cheer", rot: -8 },
+  { kind: "golgappa", mood: "sweaty", rot: 12 },
+  { kind: "chai", mood: "wink", rot: -18 },
+  { kind: "laddoo", mood: "happy", rot: 6 },
+  { kind: "mango", mood: "cheer", rot: -5 },
+  { kind: "didi", mood: "happy", color: "#2f7bff", rot: 14 },
+  { kind: "samosa", mood: "sweaty", rot: -11 },
+  { kind: "laddoo", mood: "shocked", rot: 9 },
+  { kind: "chai", mood: "happy", rot: -7 },
+  { kind: "golgappa", mood: "cheer", rot: 17 },
+  { kind: "uncle", mood: "wink", color: "#ff4f9a", rot: -13 },
+];
+
+function Row({ friends, className, offset }: { friends: Friend[]; className: string; offset: number }) {
   return (
-    <footer className="relative mt-24 bg-ink pb-28 text-white md:mt-32 md:pb-12">
-      {/* The gang, peeking over the edge */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 -top-[3.1rem] mx-auto flex max-w-6xl justify-end gap-1 px-6 lg:px-8"
-      >
-        {FRIENDS.map((f, i) => (
+    <div className={`flex flex-none items-end justify-center ${className}`}>
+      {friends.map((f, i) => (
+        <div
+          key={i}
+          className="-mx-5 flex-none sm:-mx-7 md:-mx-9"
+          style={{ transform: `rotate(${f.rot}deg)` }}
+        >
           <Mascot
-            key={f.kind}
             kind={f.kind}
             mood={f.mood}
             color={f.color}
-            className="h-14 w-14 sm:h-16 sm:w-16"
-            delay={i * 0.7}
+            className="h-32 w-32 sm:h-44 sm:w-44 md:h-56 md:w-56"
+            delay={offset + i * 0.6}
           />
-        ))}
-      </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
-      <div className="mx-auto grid max-w-6xl gap-12 px-6 pt-16 lg:grid-cols-[1.4fr_1fr_1fr] lg:px-8 lg:pt-20">
-        <div>
-          <Link href="/" className="flex items-center gap-2" aria-label="Baithak home">
-            <LogoMark className="h-10" />
-            <span className="font-display text-[1.7rem] font-bold leading-none tracking-[-0.02em]">
-              baithak
-            </span>
-          </Link>
-          <p className="mt-4 max-w-sm text-lg leading-relaxed text-white/70">
-            Party games for friends and family, run from one phone. Rules,
-            timers, words and scores, ready when everyone is.
-          </p>
+export default function Footer() {
+  return (
+    <footer className="relative mt-24 overflow-hidden bg-ink text-white md:mt-32">
+      <div className="mx-auto max-w-6xl px-6 pt-14 lg:px-8 lg:pt-20">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <Link href="/" className="flex items-center gap-2" aria-label="Baithak home">
+              <LogoMark className="h-10" />
+              <span className="font-display text-[1.7rem] font-bold leading-none tracking-[-0.02em]">
+                baithak
+              </span>
+            </Link>
+            <p className="mt-4 max-w-md text-lg leading-relaxed text-white/70">
+              Party games for friends and family, run from one phone. Rules,
+              timers, words and scores, ready when everyone is.
+            </p>
+          </div>
+
+          <nav aria-label="Baithak">
+            <h2 className="sr-only">{SITE.name}</h2>
+            <ul className="flex flex-wrap gap-2">
+              {[
+                ["/games", "All games"],
+                ["/tools", "Timer & word deck"],
+                ["/#faq", "FAQ"],
+              ].map(([href, label]) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="block rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
 
-        <nav aria-label="Games">
-          <h2 className="font-display text-lg font-semibold">Games</h2>
-          <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 text-white/70 lg:grid-cols-1">
+        <nav aria-label="Games" className="mt-10 border-t border-white/10 pt-6">
+          <h2 className="font-display text-sm font-semibold uppercase tracking-widest text-white/40">
+            Games
+          </h2>
+          <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2.5 text-white/70">
             {allGames.map((game) => (
               <li key={game.slug}>
                 <Link href={game.href} className="transition-colors hover:text-white">
@@ -61,33 +110,18 @@ export default function Footer() {
           </ul>
         </nav>
 
-        <nav aria-label="Baithak">
-          <h2 className="font-display text-lg font-semibold">{SITE.name}</h2>
-          <ul className="mt-4 flex flex-col gap-2.5 text-white/70">
-            <li>
-              <Link href="/games" className="transition-colors hover:text-white">
-                All games
-              </Link>
-            </li>
-            <li>
-              <Link href="/tools" className="transition-colors hover:text-white">
-                Timer &amp; word deck
-              </Link>
-            </li>
-            <li>
-              <Link href="/#faq" className="transition-colors hover:text-white">
-                FAQ
-              </Link>
-            </li>
-          </ul>
-        </nav>
+        <div className="mt-10 flex flex-col gap-1 text-sm text-white/50 sm:flex-row sm:justify-between">
+          <p>
+            © {new Date().getFullYear()} {SITE.name}
+          </p>
+          <p>Made for game nights across India.</p>
+        </div>
       </div>
 
-      <div className="mx-auto mt-14 flex max-w-6xl flex-col gap-2 border-t border-white/10 px-6 pt-6 text-sm text-white/50 sm:flex-row sm:justify-between lg:px-8">
-        <p>
-          © {new Date().getFullYear()} {SITE.name}
-        </p>
-        <p>Made for game nights across India.</p>
+      {/* The heap: everyone has fallen to the bottom of the page */}
+      <div aria-hidden="true" className="relative mt-6 flex flex-col items-center pb-24 md:mt-10 md:pb-0">
+        <Row friends={BACK_ROW} offset={0.3} className="relative z-0 -mb-16 translate-x-6 sm:-mb-24 md:-mb-32" />
+        <Row friends={FRONT_ROW} offset={0} className="relative z-10 -mb-5 sm:-mb-8 md:-mb-12" />
       </div>
     </footer>
   );
