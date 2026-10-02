@@ -5,8 +5,8 @@ import type { CharacterKind, Tone } from "@/lib/games";
 import Character from "./Character";
 import { BackIcon, ClockIcon, PhoneIcon, UsersIcon } from "./Icons";
 import KitChecklist from "./KitChecklist";
+import { LegoStuds, legoFor } from "./LegoButton";
 import PlayLink from "./PlayLink";
-import Studs from "./Studs";
 
 export interface GameDetailsProps {
   title: string;
@@ -39,21 +39,35 @@ function splitStep(step: string) {
 }
 
 /**
- * The details page every game shares: hero, what you need, how to play, and
- * either a "Play now" button (games with a play mode) or loose tools.
+ * The details page every game shares, mobile first: a header brick (what it
+ * is, who it's for, play), then what you need, how to play and a start card.
+ * Bricks are neutral; colour comes from the mascot, step badges and the
+ * LEGO play button.
  */
 export default function GameDetails(props: GameDetailsProps) {
   const { title, tone, play, tools } = props;
+  const lego = `lego-${legoFor(tone)}`;
+  const toneColor = `var(--lego-${legoFor(tone)})`;
+
+  const playButton = (extra = "", restartClassName = "") =>
+    play && (
+      <PlayLink
+        href={play.href}
+        storageKey={play.storageKey}
+        studs={3}
+        className={`lego-btn ${lego} ${extra}`}
+        restart
+        restartClassName={restartClassName}
+      />
+    );
 
   const kitSection = (
-    <section className="brick tone-white p-5 sm:p-6">
-      <Studs />
-      <h2 className="font-display text-2xl font-extrabold tracking-tight">
+    <section className="lego-card lego-card-static p-5 sm:p-6" aria-labelledby="kit-title">
+      <LegoStuds count={2} className="lego-card-studs" />
+      <h2 id="kit-title" className="font-display text-2xl font-bold tracking-[-0.01em] text-ink">
         What you need
       </h2>
-      <p className="mb-4 mt-1 text-sm text-ink/60">
-        Tick things off as you gather them.
-      </p>
+      <p className="mb-3 mt-1 text-ink-soft">Tick things off as you gather them.</p>
       <KitChecklist items={props.kit} builtIn={props.builtIn} />
     </section>
   );
@@ -61,28 +75,36 @@ export default function GameDetails(props: GameDetailsProps) {
   const rulesSection = (
     <section
       id="rules"
-      className="brick tone-white scroll-mt-24 overflow-hidden"
+      aria-labelledby="rules-title"
+      className="lego-card lego-card-static scroll-mt-24 overflow-visible"
     >
-      <Studs count={3} />
-      <h2 className="px-5 pt-5 font-display text-2xl font-extrabold tracking-tight sm:px-6 sm:pt-6">
+      <LegoStuds count={3} className="lego-card-studs" />
+      <h2
+        id="rules-title"
+        className="px-5 pt-5 font-display text-2xl font-bold tracking-[-0.01em] text-ink sm:px-6 sm:pt-6"
+      >
         How to play
       </h2>
-      <ol className="mt-4">
+      <ol className="mt-3">
         {props.steps.map((step, i) => {
           const { label, body } = splitStep(step);
           return (
             <li key={step}>
-              {i > 0 && <div className="brick-divider mx-0" />}
+              {i > 0 && <div className="lego-divider mx-5 sm:mx-6" />}
               <div className="flex gap-4 px-5 py-4 sm:px-6">
                 <span
-                  className={`tone-${tone} grid h-8 w-8 shrink-0 place-items-center rounded-[10px] border-2 border-[var(--tone-dark)] bg-[var(--tone)] font-display text-sm font-extrabold shadow-[inset_0_2px_0_rgb(255_255_255/0.6),0_3px_0_var(--tone-dark)]`}
+                  className="lego-badge shrink-0"
+                  style={
+                    {
+                      "--c": toneColor,
+                      color: tone === "yellow" ? "var(--color-ink)" : undefined,
+                    } as React.CSSProperties
+                  }
                 >
                   {i + 1}
                 </span>
-                <p className="pt-1 leading-relaxed text-ink/75">
-                  {label && (
-                    <strong className="font-bold text-ink">{label}. </strong>
-                  )}
+                <p className="pt-1.5 text-[1.05rem] leading-relaxed text-ink-soft">
+                  {label && <strong className="font-semibold text-ink">{label}. </strong>}
                   {body}
                 </p>
               </div>
@@ -92,41 +114,39 @@ export default function GameDetails(props: GameDetailsProps) {
       </ol>
       {props.note && (
         <>
-          <div className="brick-divider" />
-          <p className="px-5 py-4 text-sm text-ink/55 sm:px-6">{props.note}</p>
+          <div className="lego-divider mx-5 sm:mx-6" />
+          <p className="px-5 py-4 text-sm leading-relaxed text-ink-soft sm:px-6">{props.note}</p>
         </>
       )}
     </section>
   );
 
   const startCard = play && (
-    <section
-      className={`brick tone-${tone} flex flex-col items-center gap-4 p-6 text-center`}
-    >
-      <Studs count={3} />
-      <h2 className="font-display text-2xl font-extrabold tracking-tight">
+    <section className="lego-card lego-card-static flex flex-col items-center gap-3 p-6 text-center">
+      <LegoStuds count={3} className="lego-card-studs" />
+      <Character kind={props.character} tone={tone} className="h-16 w-16" />
+      <h2 className="font-display text-2xl font-bold tracking-[-0.01em] text-ink">
         Got the kit? Know the rules?
       </h2>
-      <p className="-mt-2 text-ink/70">{play.pitch}</p>
-      <PlayLink
-        href={play.href}
-        storageKey={play.storageKey}
-        className={`btn tone-${tone} min-h-14 w-full text-lg`}
-      />
+      <p className="-mt-1 text-ink-soft">{play.pitch}</p>
+      {playButton(
+        "lego-lg mt-2 w-full",
+        "mt-1 font-semibold text-ink-soft underline decoration-line decoration-2 underline-offset-4 hover:text-ink",
+      )}
     </section>
   );
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 pt-4 sm:px-6 md:pt-8">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 pt-4 sm:px-6 md:gap-10 md:pt-8 lg:px-8">
       <Link href="/games" className="keycap tone-white h-10 w-fit px-3 text-sm">
         <BackIcon width={18} height={18} /> All games
       </Link>
 
-      <header className={`brick tone-${tone} p-5 sm:p-8`}>
-        <Studs count={4} />
+      <header className="lego-card lego-card-static p-5 sm:p-8">
+        <LegoStuds count={4} className="lego-card-studs" />
         <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
-            <span className="chip">
+            <span className="lego-chip">
               {props.onScreen ? (
                 <>
                   <PhoneIcon width={13} height={13} /> Plays on screen
@@ -135,79 +155,71 @@ export default function GameDetails(props: GameDetailsProps) {
                 "Play in person"
               )}
             </span>
-            <h1 className="mt-3 font-display text-[clamp(2.3rem,10vw,4rem)] font-extrabold leading-[0.95] tracking-[-0.03em]">
+            <h1 className="mt-3 font-display text-[clamp(2.4rem,10vw,4.25rem)] font-bold leading-[0.95] tracking-[-0.035em] text-ink">
               {title}
             </h1>
           </div>
           <Character
             kind={props.character}
             tone={tone}
-            bare
-            className="-mt-2 h-28 w-24 shrink-0 animate-bob sm:h-40 sm:w-36"
+            className="-mt-1 h-24 w-24 shrink-0 sm:h-36 sm:w-36"
           />
         </div>
-        <p className="mt-3 max-w-xl text-lg leading-snug text-ink/80">
+        <p className="mt-4 max-w-2xl text-lg leading-snug text-ink sm:text-xl">
           {props.description}
         </p>
         {props.details && (
-          <p className="mt-2 max-w-xl text-sm text-ink/60">{props.details}</p>
+          <p className="mt-2 max-w-2xl leading-relaxed text-ink-soft">{props.details}</p>
         )}
         <div className="mt-5 flex flex-wrap items-center gap-2">
-          <span className="chip">
+          <span className="lego-chip">
             <UsersIcon width={14} height={14} /> {props.players} players
           </span>
-          <span className="chip">
+          <span className="lego-chip">
             <ClockIcon width={14} height={14} /> {props.duration}
           </span>
         </div>
-        <div className="brick-divider my-5" />
-        <nav className="flex gap-2" aria-label="Jump to">
-          <a href="#rules" className="btn btn-sm tone-white">
+        <div className="lego-divider my-5" />
+        <nav className="flex flex-wrap items-center gap-3" aria-label="Jump to">
+          {play
+            ? playButton("lego-btn-sm", "keycap tone-white h-11 px-4 text-sm")
+            : tools && (
+                <a href="#tools" className={`lego-btn lego-btn-sm ${lego}`}>
+                  <LegoStuds count={3} />
+                  Open the tools
+                </a>
+              )}
+          <a href="#rules" className="keycap tone-white h-11 px-4 text-sm">
             Rules
           </a>
-          {play ? (
-            <PlayLink
-              href={play.href}
-              storageKey={play.storageKey}
-              className={`btn btn-sm tone-${tone}`}
-            />
-          ) : (
-            tools && (
-              <a href="#tools" className={`btn btn-sm tone-${tone}`}>
-                Open the tools
-              </a>
-            )
-          )}
         </nav>
       </header>
 
       {play ? (
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-start">
-          <div className="flex flex-col gap-10">
+        <div className="grid gap-8 md:gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-start">
+          <div className="flex flex-col gap-8 md:gap-10">
             {kitSection}
             <div className="hidden lg:block">{startCard}</div>
           </div>
-          <div className="flex flex-col gap-10">
+          <div className="flex flex-col gap-8 md:gap-10">
             {rulesSection}
             <div className="lg:hidden">{startCard}</div>
           </div>
         </div>
       ) : (
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-start">
-          <div className="flex flex-col gap-10">
+        <div className="grid gap-8 md:gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-start">
+          <div className="flex flex-col gap-8 md:gap-10">
             {kitSection}
             {rulesSection}
           </div>
           {tools && (
-            <section id="tools" className="flex scroll-mt-24 flex-col gap-8">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-ink/45">
-                  Game tools
-                </p>
-                <h2 className="mt-1 font-display text-2xl font-extrabold tracking-tight">
-                  Everything on the table
-                </h2>
-              </div>
+            <section id="tools" aria-labelledby="tools-title" className="flex scroll-mt-24 flex-col gap-6">
+              <h2
+                id="tools-title"
+                className="font-display text-2xl font-bold tracking-[-0.01em] text-ink sm:text-3xl"
+              >
+                Everything on the table
+              </h2>
               {tools}
             </section>
           )}

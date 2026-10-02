@@ -1,4 +1,6 @@
-# Vybrid progress
+# Baithak progress
+
+_Renamed from Vybrid on 2026-10-02. Saved games still use the old `vybrid-*` localStorage keys on purpose, so existing saves keep working._
 
 A one-stop shop for playing games with friends and family in person. Everything a game needs lives on the site. Mobile first.
 
@@ -10,12 +12,54 @@ _Last updated: 2026-09-30. Nothing is committed yet: all of the work below is st
 - **Play-mode structure (required for every game):**
   - A details page shows only **What you need** and **How to play**, with a **Play now** button. The button reads **Resume game** when there's a saved game.
   - The game itself runs on its own `/play` page.
+  - During a game, the top bar always has an **End game** button (`src/app/components/EndGameButton.tsx`, with a "Keep playing / End game" confirm) that jumps to the game-over screen with the scores so far.
   - Details pages use `src/app/components/GameDetails.tsx`, play pages use `src/app/components/GamePlayShell.tsx`, and each game is registered in `src/app/games/playable.ts`.
 - **Game state** is kept in a zustand store saved to the browser (`skipHydration` + `rehydrate()` after mount). Games survive a refresh and keep the phone screen awake while playing.
 
 ## Done
 
 ### UI foundation
+- **UI pass (2026-10-02):** plain paper background (no dots); hero is "Game night, sorted." with a marker highlight that draws in, and an animated scene (`HeroScene.tsx`): a Pictionary round on a rug, with the drawer sketching a house, the timekeeper on the phone and the guesser calling "Dabba? Mandir? GHAR!", plus a still frame for reduced motion. Desktop type scale and spacing: larger section gaps, section headings at 48px, card titles below that. The two playable in-person games get wide cards so the grid has no orphan. Fixed a long-standing bug where the fonts never loaded (the next/font variables were on <body>, but the theme reads them at :root), so Bricolage Grotesque and DM Sans now actually render.
+- **SEO / AEO / GEO (2026-10-02):**
+  - **Live domain:** set `NEXT_PUBLIC_SITE_URL` to it (`src/lib/site.ts`; it falls back to Vercel's production URL, then localhost). Canonicals, the sitemap, share cards and llms.txt all use it.
+  - **Metadata:** every page has a title template, a description of 160 characters or less, a canonical, Open Graph and Twitter tags, and `lang="en-IN"` (helper: `pageMetadata` in `src/lib/seo.ts`). The `/play` screens are `noindex, follow`.
+  - **Structured data:** the home page has WebSite + ItemList of games + FAQPage. Each game page has Game + HowTo (rules as steps, kit as supplies) + BreadcrumbList.
+  - **Visible FAQ** on the home page (`src/lib/faq.ts`), with answers built from the game data so they stay true.
+  - **Files:** `robots.txt`, `sitemap.xml` (public pages only), `manifest.webmanifest`, the four-square logo as `icon.svg` plus an `apple-icon` (the create-next-app favicon is gone), and `/llms.txt`.
+  - **Share cards:** a site card plus one per game, all from `src/lib/og/card.tsx`. They load Bricolage from Google Fonts when rendered and fall back to the default font.
+- **Desktop header** is a solid bar, so page content no longer shows through or sits under an invisible click-blocker.
+- **Rebrand (2026-10-02, supersedes the earlier UI pass above):**
+  - **Fonts:** Baloo 2 for headings, Mukta for body (both by Ek Type, an Indian foundry, with Devanagari support).
+  - **Colour:** white page, near-black type (#141414); colour only comes from mascots, LEGO buttons and bricks.
+  - **Logo:** a laddoo, a moustached uncle and a samosa sitting together. One SVG source (`src/lib/og/mark.tsx`) feeds the header, footer, `icon`, `apple-icon` and share cards.
+  - **Mascots (`Mascot.tsx`):** squishy desi game-night characters. The cast is samosa, laddoo (with a fuse for Pass the Bomb), cutting chai, golgappa, kulfi, jalebi (Two Truths & a Lie), dice, a moustache uncle in round specs, and a didi with a bindi and jhumkas. Every game has its own mascot.
+    - **Face style:** dot eyes, blush and small mouths, with moods happy, cheer, wink, shifty, shocked and sweaty.
+    - **Motion:** idle squash-and-stretch, blinks, and a "boing" when their card is hovered.
+    - **Why:** they replaced the Grok-style blobs, which the user felt looked copied.
+    - `Character` maps each game to one.
+    - A turban was deliberately avoided (a Sikh religious article; caricature risk).
+  - **Primary button:** a LEGO brick with studs (`LegoButton`, `.lego-btn`), used once per view.
+  - **Landing page:** hero with the interactive LEGO builder → "How it works" band → three featured games → FAQ → closing call to action → footer. There are no uppercase eyebrows and the bands are distinct.
+  - **Navigation:** the 3D keycap nav is back (Home, Games, Tools, Surprise me) in a solid header bar, recoloured to the neutral palette, and the mobile dock is the same four keycaps.
+  - **Game cards** are neutral 3D LEGO bricks (`.lego-card`, built from the CTA brick): white body, studs, a chunky edge that presses, and the mascot as the only colour.
+  - **Game details pages:** back to the original mobile-first structure (header brick → what you need → how to play → start card; two columns on desktop), re-skinned as neutral LEGO bricks (`.lego-card-static`) with 1×1 LEGO step badges and a tone-coloured LEGO play button.
+  - **/tools** and the shared Timer / Word deck are neutral LEGO cards with LEGO action buttons.
+  - **Hero (v3):** "Party games for every baithak." in Baloo 2. The fairy lights were tried and removed.
+    - The hero phone is a playable mini Baithak (`PhoneDemo.tsx`), built from the real game UI: round chip, End game key, coloured stage brick with studs, inset cards, 3D buttons, brick tiles and "Hold to peek". An in-phone keycap tab bar switches between three games. It uses real game content, and only the open game is rendered.
+      - Imposter: deal 4 cards with a flip and vote.
+      - Top 9: tap tiles to reveal answers into the pot, on the "Indian moms" and "aunties" boards.
+      - Pictionary: a 30s clock, "They got it! +1", and Skip.
+    - A "try me!" note in Kalam (a handwritten font, muted grey) points at it. The uncle and didi peek from behind; the samosa and chai sit beside it. All four are bigger on desktop.
+    - The quick-facts row under the hero was removed.
+    - **If the dev server shows stacked screens or missing styles,** its CSS is stale: stop it, `rm -rf .next/dev`, and restart.
+    - The LEGO builder moved to its own "Waiting for everyone to turn up?" section.
+    - The pixel font was tried and dropped, because the user didn't like it.
+  - **Start new game:** wherever "Resume game" shows (game details header and start card), a "Start new game" button sits next to it. It asks for a second tap, then sends the saved game back to setup, keeping players, teams and settings (`PlayLink.tsx`).
+  - **Still to do:** the in-game play screens still use the older brick styling and uppercase labels.
+- **LEGO builder (`LegoBuilder.tsx`):** a 12×9 front-view plate. Bricks snap and drop under gravity; drag to move, drag off to delete, tap to paint; 7 colours and 1–4 stud bricks; undo, clear and "Surprise build". It saves to localStorage (`baithak-lego`) and works with mouse, touch and keyboard (Enter on a tray brick).
+- **Hover boing:** the "How it works" mascots (laddoo, jalebi, samosa) and the FAQ mascots boing on hover only, using the same `.group:hover .mascot-body` effect as the game cards. The logo squishes the same way. An earlier click/WAAPI "Squishy" version was jittery and was removed.
+- **Steady hover zones:** keycaps, 3D buttons, LEGO buttons and linked LEGO cards have an invisible `::after` covering the face plus the 3D edge. Hovering the bottom edge no longer flickers. It's sized so it never overlaps neighbouring keys.
+- **FAQ:** every card starts closed. Each question is a neutral LEGO brick with a coloured 1×1 LEGO toggle. Colours cycle through the list, and a few mascots sit beside the heading. Rebuilt from Google India autocomplete research (what people search before landing here) in `src/lib/faq.ts`. Answer counts come from the data. It's a smooth grid-rows accordion (`Faq.tsx`) whose closed answers stay in the HTML for crawlers.
 - **Design system** in `src/app/globals.css`:
   - "Lego" bricks (`.brick`, `.brick-press`, `.studs`), 3D buttons (`.btn`) and keycap buttons (`.keycap`).
   - Colors come from tone classes (`.tone-red` and so on).
@@ -42,7 +86,7 @@ _Last updated: 2026-09-30. Nothing is committed yet: all of the work below is st
 - **Setup:** 3–15 players in seating order, 1–3 imposters (capped so the crew always outnumber them), optional clue timer, imposter hint (none / category / hint word), Classic or **Undercover** mode (imposter gets a similar word and doesn't know), and opt-in **troll rounds** (about 1 in 8 rounds, everyone is the imposter).
 - **Round flow:** pass → card reveal → clues (random first player, "Forgot your word?" hold-to-peek) → vote → verdict. With several imposters you keep voting until all are caught; one wrong vote and the imposters win. Caught imposters get one guess at the word to steal the round (Classic only).
 - **Scores:** crew +1 each for a catch, imposter +2 for getting away, +1 for a steal. Editable scores, game-over standings and a round list.
-- **Word bank:** 669 words in 20 categories (`src/lib/imposter/words.ts`), each with a one-word hint. Desi categories (Desi khana, Bollywood movies, Filmy stars, Cricket, Festivals, Shaadi season, Desi ghar, Desi life, Desi TV & OTT, Places in India, Gali & bazaar, Desi brands, Mythology) are the default "Desi mix"; Food, Animals, Jobs, Places, Everyday things, Hollywood & shows and Sports are the classic ones. Played words aren't repeated until a category runs out.
+- **Word bank:** 707 words in 21 packs (`src/lib/imposter/words.ts`), each with a one-word hint. The original bank, plus these from a later desi rewrite (the rest of that rewrite was dropped as too obscure): the **Street food**, **TV & OTT**, **Snacks & brands**, **Shaadi season** and **Tyohaar** packs (the last four replace the original packs on the same theme and keep their ids, so saved category picks still work); Circuit, Poo, Chatur and Manjulika (Filmy stars pack, now "Filmy stars & characters"); Rasode Mein Kaun Tha (TV & OTT); Daag Achhe Hain (Snacks & brands); gully cricket rules (Cricket). Words aren't repeated across packs. Long words get smaller type on the card.
 - **Verified:** Playwright run at phone size covered the card deal, hints, reload mid-game, crew win, imposter win, ending a game early, 2 imposters in Undercover, troll round and the clue timer. No console errors. `tsc`, `eslint` and `next build` pass.
 - **Code:** `src/store/imposterStore.ts`, `src/app/components/imposter/*`, `src/lib/imposter/words.ts`.
 

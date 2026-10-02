@@ -1,5 +1,5 @@
 /**
- * Server-side question bank: the ProtoQA survey pack plus Vybrid originals.
+ * Server-side question bank: the ProtoQA survey pack plus Baithak originals.
  * Only import this from route handlers; the survey file is ~1.5 MB.
  */
 import survey from "@/data/top9/survey.json";

@@ -22,7 +22,7 @@ function q(
 }
 
 /**
- * Vybrid originals: nine answers per prompt, written with Indian game nights
+ * Baithak originals: nine answers per prompt, written with Indian game nights
  * in mind. Rankings are our estimates of what a crowd would say, not results
  * from a real survey. Points add up to roughly 100.
  */

@@ -162,7 +162,7 @@ export function Intro() {
         <span className="absolute bottom-3 right-3 text-[0.7rem] font-semibold text-ink/45">
           {question.source === "survey"
             ? `Real survey · ${question.answers.length} answers`
-            : `Vybrid original · ${question.answers.length} answers`}
+            : `Baithak original · ${question.answers.length} answers`}
         </span>
       </div>
 

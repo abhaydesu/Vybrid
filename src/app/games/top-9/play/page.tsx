@@ -4,7 +4,8 @@ import GamePlayShell from "@/app/components/GamePlayShell";
 import Top9Game from "@/app/components/top9/Top9Game";
 
 export const metadata: Metadata = {
-  title: "Play Top 9 | Vybrid",
+  title: "Play Top 9",
+  robots: { index: false, follow: true },
 };
 
 export default function PlayTopNinePage() {

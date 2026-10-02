@@ -11,7 +11,7 @@ export interface Top9Question {
   categories: string[];
   /** Adult themes: only dealt when the host opts in. */
   adult?: boolean;
-  /** "survey" = real survey data (ProtoQA); "original" = written for Vybrid. */
+  /** "survey" = real survey data (ProtoQA); "original" = written for Baithak. */
   source: "survey" | "original";
   answers: Top9Answer[];
 }

@@ -94,6 +94,13 @@ export function Pass() {
 
 // ------------------------------------------------------------------ reveal
 
+/** Dialogues and phrases can run long, so big words get smaller type. */
+function wordSize(word: string) {
+  if (word.length > 28) return "text-[clamp(1.6rem,7.5vw,2.6rem)]";
+  if (word.length > 16) return "text-[clamp(1.9rem,9vw,3.2rem)]";
+  return "text-[clamp(2.2rem,12vw,4.2rem)]";
+}
+
 function CardFace({ card, categoryId }: { card: Card; categoryId: string }) {
   const mode = useImposter((s) => s.settings.mode);
   const category = imposterCategory(categoryId);
@@ -127,7 +134,9 @@ function CardFace({ card, categoryId }: { card: Card; categoryId: string }) {
       <p className="text-sm font-bold uppercase tracking-[0.2em] text-ink/55">
         The secret word is
       </p>
-      <p className="mt-2 break-words font-display text-[clamp(2.2rem,12vw,4.2rem)] font-extrabold leading-none tracking-tight [overflow-wrap:anywhere]">
+      <p
+        className={`mt-2 break-words font-display ${wordSize(card.word)} font-extrabold leading-[1.02] tracking-tight [overflow-wrap:anywhere]`}
+      >
         {card.word}
       </p>
       {mode === "classic" && category && (
@@ -159,7 +168,7 @@ export function Reveal() {
         initial={{ rotateY: 90, opacity: 0 }}
         animate={{ rotateY: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 22 }}
-        className="inset-well flex flex-1 flex-col items-center justify-center px-4 py-10 text-center"
+        className="inset-well flex flex-1 flex-col items-center justify-center px-4 py-8 text-center"
       >
         {card && <CardFace card={card} categoryId={s.round.word.categoryId} />}
       </motion.div>
@@ -171,7 +180,7 @@ export function Reveal() {
         }}
         className="btn tone-white min-h-14 w-full text-lg"
       >
-        {next ? `Got it. Hide & pass to ${next.name}` : "Got it. Hide my card"}
+        {next ? `Hide & pass to ${next.name}` : "Got it, hide my card"}
       </button>
     </div>
   );
@@ -515,7 +524,9 @@ export function Guess() {
 
       <div className="inset-well grid flex-1 place-items-center px-4 py-8">
         {shown ? (
-          <p className="font-display text-[clamp(2.2rem,11vw,4rem)] font-extrabold leading-none tracking-tight [overflow-wrap:anywhere]">
+          <p
+            className={`font-display ${wordSize(s.round.word.word)} font-extrabold leading-[1.02] tracking-tight [overflow-wrap:anywhere]`}
+          >
             {s.round.word.word}
           </p>
         ) : (
@@ -569,7 +580,6 @@ const OUTCOME_COPY = {
 export function RoundOver() {
   const s = useImposter();
   const play = useSound();
-  const [confirmEnd, setConfirmEnd] = useState(false);
   const outcome = s.round?.outcome;
 
   useEffect(() => {
@@ -662,16 +672,6 @@ export function RoundOver() {
           className="btn tone-green min-h-14 w-full text-lg"
         >
           Next round
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            if (confirmEnd) s.endGame();
-            setConfirmEnd((c) => !c);
-          }}
-          className="self-center text-sm font-bold text-ink/60 underline underline-offset-4"
-        >
-          {confirmEnd ? "Tap again to end the game" : "End game"}
         </button>
       </div>
     </div>

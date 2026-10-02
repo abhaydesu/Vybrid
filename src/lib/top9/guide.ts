@@ -17,5 +17,5 @@ export const top9Guide = {
     "Steal: the other team huddles and gives one answer. If it's on the board they take the whole pot; if not, the team in control banks it.",
     "Win: after the last round (worth double, if you like), the team with the most points wins.",
   ],
-  note: "Survey boards come from ProtoQA (Boratko et al., 2020, CC BY 4.0): real Family Feud-style surveys of 100 people, mostly American. Desi life boards are Vybrid originals, ranked by our best guess at what a crowd would say.",
+  note: "Survey boards come from ProtoQA (Boratko et al., 2020, CC BY 4.0): real Family Feud-style surveys of 100 people, mostly American. Desi life boards are Baithak originals, ranked by our best guess at what a crowd would say.",
 };

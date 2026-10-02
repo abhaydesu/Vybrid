@@ -111,7 +111,7 @@ export const offlineGames: OfflineGame[] = [
     description: "Share three statements and let the group spot the lie.",
     details: "Perfect icebreaker; keep statements short for faster rounds.",
     tone: "pink",
-    character: "fibber",
+    character: "teller",
     players: "3+",
     duration: "10–20 min",
     props: ["None"],

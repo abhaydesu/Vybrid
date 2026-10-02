@@ -260,7 +260,7 @@ export default function Setup() {
         >
           {SURVEY_CREDIT.label}
         </a>
-        , {SURVEY_CREDIT.license}. Desi life boards are Vybrid originals.
+        , {SURVEY_CREDIT.license}. Desi life boards are Baithak originals.
       </p>
     </div>
   );

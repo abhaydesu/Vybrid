@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { Tone } from "@/lib/games";
 import { WORDS_BY_DIFFICULTY, type Difficulty } from "@/lib/wordBank";
 import { ShuffleIcon } from "./Icons";
-import Studs from "./Studs";
+import { LegoStuds, legoFor } from "./LegoButton";
 
 const STORAGE_KEY = "vybrid_custom_words";
 const categories = ["random", ...Object.keys(WORDS_BY_DIFFICULTY)];
@@ -86,18 +86,21 @@ export default function RandomWordGenerator({
     setCustom("");
   }
 
+  // Yellow reads poorly as a big action button, so it hands over to red.
+  const action = `lego-btn lego-${tone === "yellow" ? "red" : legoFor(tone)}`;
+
   return (
-    <div className={`brick tone-${tone} mt-3 p-5`}>
-      <Studs />
+    <div className="lego-card lego-card-static p-5">
+      <LegoStuds count={2} className="lego-card-studs" />
       <div className="flex items-center justify-between gap-3">
-        <h3 className="font-display text-lg font-bold">{title}</h3>
-        <span className="chip">{pool.length} left</span>
+        <h3 className="font-display text-xl font-bold text-ink">{title}</h3>
+        <span className="lego-chip">{pool.length} left</span>
       </div>
 
       <button
         type="button"
         onClick={() => current && setHidden((h) => !h)}
-        className="inset-well mt-4 grid min-h-36 w-full place-items-center px-4 py-6 text-center"
+        className="mt-4 grid min-h-36 w-full place-items-center rounded-2xl border-[1.5px] border-[#ecebe7] bg-white px-4 py-6 text-center"
         aria-label={hidden ? "Reveal word" : "Hide word"}
       >
         <AnimatePresence mode="popLayout" initial={false}>
@@ -107,7 +110,7 @@ export default function RandomWordGenerator({
             animate={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
             exit={{ opacity: 0, y: -16, scale: 0.9 }}
             transition={{ type: "spring", stiffness: 380, damping: 22 }}
-            className={`font-display text-[clamp(1.9rem,9vw,3rem)] font-extrabold leading-tight tracking-tight transition-[filter] ${
+            className={`font-display text-[clamp(1.9rem,9vw,3rem)] font-bold leading-tight tracking-tight text-ink transition-[filter] ${
               hidden ? "blur-lg select-none" : ""
             } ${current ? "" : "text-ink/35"}`}
           >
@@ -123,7 +126,8 @@ export default function RandomWordGenerator({
 
       {current ? (
         <div className="mt-5 grid grid-cols-2 gap-3">
-          <button type="button" onClick={roll} className="btn tone-white">
+          <button type="button" onClick={roll} className="lego-btn lego-white">
+            <LegoStuds count={2} />
             <ShuffleIcon width={18} height={18} />
             Skip
           </button>
@@ -131,17 +135,15 @@ export default function RandomWordGenerator({
             type="button"
             onClick={markUsed}
             disabled={isUsed}
-            className={`btn tone-${tone === "yellow" ? "red" : tone}`}
+            className={action}
           >
+            <LegoStuds count={3} />
             {isUsed ? "In play" : "Use this word"}
           </button>
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={roll}
-          className={`btn tone-${tone === "yellow" ? "red" : tone} mt-5 w-full`}
-        >
+        <button type="button" onClick={roll} className={`${action} mt-5 w-full`}>
+          <LegoStuds count={4} />
           <ShuffleIcon width={18} height={18} />
           Deal a word
         </button>
@@ -158,9 +160,7 @@ export default function RandomWordGenerator({
 
       <div className="mt-6 space-y-4">
         <fieldset>
-          <legend className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-ink/50">
-            Category
-          </legend>
+          <legend className="mb-2 font-semibold text-ink">Category</legend>
           <div className="flex flex-wrap gap-2">
             {categories.map((c) => (
               <button
@@ -177,9 +177,7 @@ export default function RandomWordGenerator({
         </fieldset>
 
         <fieldset>
-          <legend className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-ink/50">
-            Difficulty
-          </legend>
+          <legend className="mb-2 font-semibold text-ink">Difficulty</legend>
           <div className="grid grid-cols-3 gap-2">
             {difficulties.map((d) => (
               <button
@@ -196,7 +194,7 @@ export default function RandomWordGenerator({
         </fieldset>
 
         <details className="group">
-          <summary className="cursor-pointer list-none text-sm font-bold text-ink/70 [&::-webkit-details-marker]:hidden">
+          <summary className="cursor-pointer list-none font-semibold text-ink [&::-webkit-details-marker]:hidden">
             <span className="inline-block transition-transform group-open:rotate-90">
               ▸
             </span>{" "}
@@ -216,14 +214,14 @@ export default function RandomWordGenerator({
               placeholder="e.g. Aunt Priya's biryani"
               className="field"
             />
-            <button type="submit" className="btn tone-white shrink-0">
+            <button type="submit" className="lego-btn lego-white lego-btn-sm mt-0 shrink-0 self-center">
               Add
             </button>
           </form>
           {customWords.length > 0 && (
             <div className="mt-3 flex flex-wrap items-center gap-1.5">
               {customWords.map((w) => (
-                <span key={w} className="chip">
+                <span key={w} className="lego-chip">
                   {w}
                 </span>
               ))}
@@ -241,9 +239,7 @@ export default function RandomWordGenerator({
         {used.length > 0 && (
           <div>
             <div className="mb-2 flex items-baseline justify-between">
-              <p className="text-xs font-bold uppercase tracking-[0.15em] text-ink/50">
-                Played ({used.length})
-              </p>
+              <p className="font-semibold text-ink">Played ({used.length})</p>
               <button
                 type="button"
                 onClick={() => setUsed([])}
@@ -254,7 +250,7 @@ export default function RandomWordGenerator({
             </div>
             <div className="flex flex-wrap gap-1.5">
               {used.map((w) => (
-                <span key={w} className="chip opacity-70">
+                <span key={w} className="lego-chip opacity-70">
                   {w}
                 </span>
               ))}

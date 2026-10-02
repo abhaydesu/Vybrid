@@ -3,35 +3,34 @@
 import { useState } from "react";
 
 import { playerScore, useImposter } from "@/store/imposterStore";
+import EndGameButton from "../EndGameButton";
 
 export default function Scoreboard() {
   const state = useImposter();
   const [editing, setEditing] = useState(false);
-  const [confirmEnd, setConfirmEnd] = useState(false);
   const roundNumber = state.round?.number ?? state.history.length + 1;
 
   return (
     <section aria-label="Scoreboard" className="flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-2">
-        <span className="chip tone-white">Round {roundNumber}</span>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={state.toggleMuted}
-            aria-label={state.muted ? "Turn sound on" : "Mute sound"}
-            className="keycap tone-white h-9 px-3 text-xs"
-          >
-            {state.muted ? "🔇 Muted" : "🔊 Sound"}
-          </button>
-          <button
-            type="button"
-            onClick={() => setEditing((e) => !e)}
-            aria-pressed={editing}
-            className="keycap tone-white h-9 px-3 text-xs"
-          >
-            {editing ? "Done" : "Scores"}
-          </button>
-        </div>
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        <span className="chip tone-white mr-auto">Round {roundNumber}</span>
+        <button
+          type="button"
+          onClick={state.toggleMuted}
+          aria-label={state.muted ? "Turn sound on" : "Mute sound"}
+          className="keycap tone-white h-9 w-9 text-sm"
+        >
+          {state.muted ? "🔇" : "🔊"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setEditing((e) => !e)}
+          aria-pressed={editing}
+          className="keycap tone-white h-9 px-3 text-xs"
+        >
+          {editing ? "Done" : "Scores"}
+        </button>
+        <EndGameButton onEnd={state.endGame} />
       </div>
 
       {editing && (
@@ -71,16 +70,6 @@ export default function Scoreboard() {
             Crew +1 each for catching the imposter · imposter +2 for getting
             away · +1 for stealing with the right guess.
           </p>
-          <button
-            type="button"
-            onClick={() => {
-              if (confirmEnd) state.endGame();
-              setConfirmEnd((c) => !c);
-            }}
-            className="self-center text-sm font-bold text-[#c63a28] underline underline-offset-4"
-          >
-            {confirmEnd ? "Tap again to end the game now" : "End game early"}
-          </button>
         </>
       )}
     </section>

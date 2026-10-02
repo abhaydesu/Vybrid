@@ -15,7 +15,7 @@ export default function KitChecklist({ items, builtIn = [] }: KitChecklistProps)
 
   if (items.length === 0) {
     return (
-      <p className="font-semibold text-ink/70">
+      <p className="text-lg text-ink-soft">
         Nothing at all. Just your people and this page.
       </p>
     );
@@ -31,7 +31,7 @@ export default function KitChecklist({ items, builtIn = [] }: KitChecklistProps)
   }
 
   return (
-    <ul className="flex flex-col gap-2.5">
+    <ul className="divide-y divide-line border-y border-line">
       {items.map((item) => {
         const provided = builtIn.includes(item);
         const done = provided || checked.has(item);
@@ -42,20 +42,20 @@ export default function KitChecklist({ items, builtIn = [] }: KitChecklistProps)
               disabled={provided}
               aria-pressed={done}
               onClick={() => toggle(item)}
-              className="keycap tone-green h-auto min-h-12 w-full justify-start px-3 py-2 text-left disabled:cursor-default"
+              className="flex min-h-14 w-full items-center gap-3 py-3 text-left disabled:cursor-default"
             >
               <span
-                className={`grid h-6 w-6 shrink-0 place-items-center rounded-lg border-2 transition-colors ${
+                className={`grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition-colors ${
                   done
-                    ? "border-[#178443] bg-[#25b35f] text-white"
-                    : "border-line bg-white text-transparent"
+                    ? "border-[#1fbf6a] bg-[#1fbf6a] text-white"
+                    : "border-[#cfccc5] bg-white text-transparent"
                 }`}
               >
                 <CheckIcon width={15} height={15} strokeWidth={3} />
               </span>
-              <span className="flex-1 text-[0.95rem]">{item}</span>
+              <span className="flex-1 text-lg text-ink">{item}</span>
               {provided && (
-                <span className="rounded-md bg-white/70 px-2 py-0.5 text-xs font-bold text-[#178443]">
+                <span className="rounded-full bg-paper-deep px-2.5 py-0.5 text-sm font-semibold text-ink-soft">
                   Built in
                 </span>
               )}

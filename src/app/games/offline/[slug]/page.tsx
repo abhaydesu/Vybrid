@@ -1,10 +1,13 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import GameDetails from "@/app/components/GameDetails";
 import RandomWordGenerator from "@/app/components/RandomWordGenerator";
 import Timer from "@/app/components/Timer";
+import JsonLd from "@/app/components/JsonLd";
 import { offlineGames } from "@/lib/offlineGames";
-import { playProps } from "../../playable";
+import { gameJsonLd, gameMetaDescription, pageMetadata } from "@/lib/seo";
+import { playableGames, playProps } from "../../playable";
 
 interface OfflineGamePageProps {
   params: Promise<{ slug: string }>;
@@ -16,10 +19,20 @@ export async function generateStaticParams() {
   return offlineGames.map((game) => ({ slug: game.slug }));
 }
 
-export async function generateMetadata({ params }: OfflineGamePageProps) {
+export async function generateMetadata({
+  params,
+}: OfflineGamePageProps): Promise<Metadata> {
   const { slug } = await params;
   const game = offlineGames.find((item) => item.slug === slug);
-  return { title: game ? `${game.title} | Vybrid` : "Vybrid" };
+  if (!game) return {};
+  return pageMetadata({
+    title: `How to play ${game.title}`,
+    description: gameMetaDescription({
+      ...game,
+      playable: Boolean(playableGames[game.slug]),
+    }),
+    path: `/games/offline/${game.slug}`,
+  });
 }
 
 export default async function OfflineGamePage({
@@ -60,8 +73,22 @@ export default async function OfflineGamePage({
       </>
     ) : undefined;
 
+  const kit = game.props.filter((p) => p !== "None");
+
   return (
-    <GameDetails
+    <>
+      <JsonLd
+        data={gameJsonLd({
+          title: game.title,
+          description: game.description,
+          path: `/games/offline/${game.slug}`,
+          players: game.players,
+          duration: game.duration,
+          kit,
+          steps: game.steps,
+        })}
+      />
+      <GameDetails
       title={game.title}
       description={game.description}
       details={game.details}
@@ -69,11 +96,12 @@ export default async function OfflineGamePage({
       character={game.character}
       players={game.players}
       duration={game.duration}
-      kit={game.props.filter((p) => p !== "None")}
+      kit={kit}
       builtIn={["Timer"]}
       steps={game.steps}
       play={play}
       tools={tools}
-    />
+      />
+    </>
   );
 }

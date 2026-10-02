@@ -1,29 +1,72 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
+import { Baloo_2, Kalam, Mukta } from "next/font/google";
 
+import { SITE } from "@/lib/site";
+import Footer from "./components/Footer";
 import NavDock from "./components/NavDock";
 import "./globals.css";
 
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
+// Both from Ek Type, an Indian foundry: Baloo 2 is warm and rounded for
+// headings, Mukta is a calm humanist sans for reading. Both cover Devanagari.
+const baloo = Baloo_2({
+  variable: "--font-baloo",
   subsets: ["latin"],
   display: "swap",
 });
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+// Handwritten notes, also by an Indian foundry (Indian Type Foundry).
+const kalam = Kalam({
+  variable: "--font-kalam",
   subsets: ["latin"],
+  weight: ["700"],
+  display: "swap",
+});
+
+const mukta = Mukta({
+  variable: "--font-mukta",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Vybrid | Game night, sorted",
-  description:
-    "A one-stop shop for party games with friends and family. Rules, timers, word lists and scorekeeping, all in one place.",
+  metadataBase: new URL(SITE.url),
+  title: {
+    default: `${SITE.name}: party games for friends and family, on one phone`,
+    template: `%s | ${SITE.name}`,
+  },
+  description: SITE.description,
+  applicationName: SITE.name,
+  keywords: [
+    "party games",
+    "game night",
+    "games to play with friends",
+    "family games",
+    "imposter game",
+    "pictionary words",
+    "family feud game",
+    "desi party games",
+    "Bollywood games",
+    "games for Indian families",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: SITE.name,
+    locale: SITE.locale,
+    url: "/",
+    title: `${SITE.name}: ${SITE.tagline}`,
+    description: SITE.description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE.name}: ${SITE.tagline}`,
+    description: SITE.description,
+  },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f6f3ed",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -35,10 +78,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${bricolage.variable} ${dmSans.variable}`}>
+    // Font variables go on <html> so the theme tokens on :root can see them.
+    <html lang={SITE.language} className={`${baloo.variable} ${mukta.variable} ${kalam.variable}`}>
+      <body>
         <NavDock />
-        <div className="pb-32 md:pb-16">{children}</div>
+        {children}
+        <Footer />
       </body>
     </html>
   );

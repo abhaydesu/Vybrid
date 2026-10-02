@@ -15,6 +15,7 @@ export type CharacterKind =
   | "actor"
   | "artist"
   | "fibber"
+  | "teller"
   | "hotseat"
   | "writer"
   | "bomber"

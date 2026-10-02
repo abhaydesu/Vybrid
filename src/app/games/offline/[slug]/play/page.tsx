@@ -19,7 +19,11 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PlayPageProps) {
   const { slug } = await params;
   const game = offlineGames.find((item) => item.slug === slug);
-  return { title: game ? `Play ${game.title} | Vybrid` : "Vybrid" };
+  return {
+    title: game ? `Play ${game.title}` : undefined,
+    // The game screen itself; the details page is the one to rank.
+    robots: { index: false, follow: true },
+  };
 }
 
 export default async function PlayPage({ params }: PlayPageProps) {

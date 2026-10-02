@@ -47,17 +47,17 @@ export default function GameCatalogue({ games }: { games: CatalogGame[] }) {
             type="button"
             aria-pressed={active === f.id}
             onClick={() => setActive(f.id)}
-            className={`keycap tone-${f.tone} h-11 shrink-0 px-4 text-sm`}
+            className="inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-line bg-white px-4 font-semibold text-ink-soft transition-colors hover:text-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
           >
             {f.label}
-            <span className="rounded-md bg-black/5 px-1.5 text-xs tabular-nums">
+            <span className="text-sm tabular-nums opacity-60">
               {games.filter(f.test).length}
             </span>
           </button>
         ))}
       </div>
 
-      <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-2 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {visible.map((game) => (
           <GameCard key={game.slug} game={game} />
         ))}
