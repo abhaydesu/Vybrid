@@ -15,7 +15,8 @@ export type MascotKind =
   | "dice"
   | "uncle"
   | "didi"
-  | "jalebi";
+  | "jalebi"
+  | "mango";
 
 export type MascotMood = "happy" | "cheer" | "wink" | "shifty" | "shocked" | "sweaty";
 
@@ -275,6 +276,31 @@ function parts(kind: MascotKind, color: string, fuse?: boolean) {
         ),
       };
     }
+    case "mango":
+      return {
+        face: { cx: 50, cy: 58 },
+        art: (
+          <>
+            <defs>
+              <linearGradient id="mango-skin" x1="0.2" y1="0" x2="0.8" y2="1">
+                <stop offset="0" stopColor="#d8dc3a" />
+                <stop offset="0.45" stopColor="#ffb02e" />
+                <stop offset="1" stopColor="#ff7a3d" />
+              </linearGradient>
+            </defs>
+            {/* stem and leaf */}
+            <path d="M50 22C50 16 53 12 57 10" {...line} strokeWidth={3} />
+            <path d="M57 11C66 4 78 6 82 14C74 20 62 19 57 11Z" fill="#2fa84f" stroke={INK} strokeWidth={2.2} strokeLinejoin="round" />
+            <path d="M60 12C67 11 74 12 79 14" stroke="#1d7a38" strokeWidth={1.6} strokeLinecap="round" />
+            <path
+              d="M50 20C74 16 92 36 90 62C88 84 68 96 50 94C30 96 10 82 10 60C10 36 28 22 50 20Z"
+              fill="url(#mango-skin)"
+            />
+            <ellipse cx="30" cy="80" rx="6" ry="3" fill="#ff5a3d" opacity={0.35} />
+            <Gloss x={30} y={36} rx={8} ry={4.5} />
+          </>
+        ),
+      };
     case "dice":
       return {
         face: { cx: 50, cy: 58 },

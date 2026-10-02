@@ -43,6 +43,8 @@ export const metadata: Metadata = {
     "games to play with friends",
     "family games",
     "imposter game",
+    "dumb charades",
+    "dumb charades movie names",
     "pictionary words",
     "family feud game",
     "desi party games",

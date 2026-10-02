@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 import { sfx } from "@/lib/sfx";
 import { categoryMeta, type WordCard } from "@/lib/words/deck";
@@ -14,6 +14,7 @@ import {
   usePictionary,
 } from "@/store/pictionaryStore";
 import Character from "../Character";
+import { HandTransition, handCardVariants } from "../HandTransition";
 import { ShuffleIcon } from "../Icons";
 
 function useSound() {
@@ -129,11 +130,7 @@ function WordOption({
 
   return (
     <motion.button
-      layout
-      initial={{ opacity: 0, y: 14, scale: 0.96 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.94 }}
-      transition={{ type: "spring", stiffness: 420, damping: 30 }}
+      variants={handCardVariants}
       type="button"
       onClick={onPick}
       className={`brick brick-flat brick-press tone-${meta.tone} flex w-full items-center gap-3 px-4 py-4 text-left`}
@@ -236,21 +233,22 @@ export function Choose() {
         </p>
       )}
 
-      <div className="flex flex-col gap-4">
-        <AnimatePresence mode="popLayout" initial={false}>
-          {s.hand.map((card) => (
-            <WordOption
-              key={card.word}
-              card={card}
-              cta={opponentsPick ? "Give this" : "Draw this"}
-              onPick={() => {
-                play("tap");
-                s.chooseWord(card);
-              }}
-            />
-          ))}
-        </AnimatePresence>
-      </div>
+      <HandTransition
+        handKey={s.hand.map((c) => c.word).join("|")}
+        className="flex flex-col gap-4"
+      >
+        {s.hand.map((card) => (
+          <WordOption
+            key={card.word}
+            card={card}
+            cta={opponentsPick ? "Give this" : "Draw this"}
+            onPick={() => {
+              play("tap");
+              s.chooseWord(card);
+            }}
+          />
+        ))}
+      </HandTransition>
 
       <button
         type="button"

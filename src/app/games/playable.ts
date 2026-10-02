@@ -1,5 +1,7 @@
 import type { ComponentType } from "react";
 
+import CharadesGame from "@/app/components/charades/CharadesGame";
+import DumbCharadesGame from "@/app/components/dumb-charades/DumbCharadesGame";
 import ImposterGame from "@/app/components/imposter/ImposterGame";
 import PictionaryGame from "@/app/components/pictionary/PictionaryGame";
 import Top9Game from "@/app/components/top9/Top9Game";
@@ -31,6 +33,18 @@ export const playableGames: Record<string, PlayableGame> = {
     storageKey: STORAGE_KEYS.top9,
     detailsHref: "/games/top-9",
     pitch: "Name your teams, pick a host (or don't), and bring up the board.",
+  },
+  charades: {
+    Game: CharadesGame,
+    storageKey: STORAGE_KEYS.charades,
+    detailsHref: "/games/offline/charades",
+    pitch: "Set up teams, then pass the phone to whoever's acting.",
+  },
+  "dumb-charades": {
+    Game: DumbCharadesGame,
+    storageKey: STORAGE_KEYS.dumbCharades,
+    detailsHref: "/games/offline/dumb-charades",
+    pitch: "Set up teams, then pass the phone to whoever's picking.",
   },
   imposter: {
     Game: ImposterGame,

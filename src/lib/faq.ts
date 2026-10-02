@@ -42,6 +42,8 @@ const imposter = game("imposter");
 const pictionary = game("pictionary");
 const top9 = game("top-9");
 const mafia = game("mafia-werewolf");
+const dumbCharades = game("dumb-charades");
+const charades = game("charades");
 
 export const faqs: Faq[] = [
   {
@@ -79,6 +81,11 @@ export const faqs: Faq[] = [
     question: "How do you play Pictionary without the board game?",
     answer: `All you need is paper and a pen. ${SITE.name}'s Pictionary deals from ${fmt(roundDown(pictionaryWords, 50))}+ drawable words in ${pictionaryCategories.length} categories, including Desi life, and runs the timer and scores for 2 to 4 teams.`,
     link: { href: pictionary.href, label: "How to play Pictionary" },
+  },
+  {
+    question: "How do you play dumb charades?",
+    answer: `One team picks a movie and whispers it to a player on the other team, who acts it out without speaking while their own team guesses. There's no fixed time limit: if they're stuck for long enough, they give up and the teams swap. ${SITE.name}'s Dumb Charades (${dumbCharades.players} players) picks the movie options, keeps the stopwatch and the score, and has the hand signals ready. For a faster version against the clock, try ${charades.title}.`,
+    link: { href: dumbCharades.href, label: "How to play Dumb Charades" },
   },
   {
     question: `Is ${SITE.name} an app? Do I need to download anything?`,

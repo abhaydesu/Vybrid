@@ -57,6 +57,7 @@ _Last updated: 2026-09-30. Nothing is committed yet: all of the work below is st
   - **Start new game:** wherever "Resume game" shows (game details header and start card), a "Start new game" button sits next to it. It asks for a second tap, then sends the saved game back to setup, keeping players, teams and settings (`PlayLink.tsx`).
   - **Still to do:** the in-game play screens still use the older brick styling and uppercase labels.
 - **LEGO builder (`LegoBuilder.tsx`):** a 12×9 front-view plate. Bricks snap and drop under gravity; drag to move, drag off to delete, tap to paint; 7 colours and 1–4 stud bricks; undo, clear and "Surprise build". It saves to localStorage (`baithak-lego`) and works with mouse, touch and keyboard (Enter on a tray brick).
+- **Card-hand transitions (`HandTransition.tsx`):** "Show different words / titles" (Pictionary and Dumb Charades) animates the whole hand as one unit: the old set fades out in about 0.15s, then the new cards slide in one after another. The earlier version animated each card separately with `popLayout` and `layout`, so old and new cards overlapped and fought over their positions. Reuse it for any new "pick from a hand" screen.
 - **Hover boing:** the "How it works" mascots (laddoo, jalebi, samosa) and the FAQ mascots boing on hover only, using the same `.group:hover .mascot-body` effect as the game cards. The logo squishes the same way. An earlier click/WAAPI "Squishy" version was jittery and was removed.
 - **Steady hover zones:** keycaps, 3D buttons, LEGO buttons and linked LEGO cards have an invisible `::after` covering the face plus the 3D edge. Hovering the bottom edge no longer flickers. It's sized so it never overlaps neighbouring keys.
 - **FAQ:** every card starts closed. Each question is a neutral LEGO brick with a coloured 1×1 LEGO toggle. Colours cycle through the list, and a few mascots sit beside the heading. Rebuilt from Google India autocomplete research (what people search before landing here) in `src/lib/faq.ts`. Answer counts come from the data. It's a smooth grid-rows accordion (`Faq.tsx`) whose closed answers stay in the HTML for crawlers.
@@ -89,6 +90,28 @@ _Last updated: 2026-09-30. Nothing is committed yet: all of the work below is st
 - **Word bank:** 707 words in 21 packs (`src/lib/imposter/words.ts`), each with a one-word hint. The original bank, plus these from a later desi rewrite (the rest of that rewrite was dropped as too obscure): the **Street food**, **TV & OTT**, **Snacks & brands**, **Shaadi season** and **Tyohaar** packs (the last four replace the original packs on the same theme and keep their ids, so saved category picks still work); Circuit, Poo, Chatur and Manjulika (Filmy stars pack, now "Filmy stars & characters"); Rasode Mein Kaun Tha (TV & OTT); Daag Achhe Hain (Snacks & brands); gully cricket rules (Cricket). Words aren't repeated across packs. Long words get smaller type on the card.
 - **Verified:** Playwright run at phone size covered the card deal, hints, reload mid-game, crew win, imposter win, ending a game early, 2 imposters in Undercover, troll round and the clue timer. No console errors. `tsc`, `eslint` and `next build` pass.
 - **Code:** `src/store/imposterStore.ts`, `src/app/components/imposter/*`, `src/lib/imposter/words.ts`.
+
+### Charades: done (`/games/offline/charades` → `/play`)
+- **Rapid-fire on one phone:** one person acts each turn (rotating through the team's players, if names are given) while their team guesses. The phone deals words, runs the clock and keeps score.
+- **Setup:** 2–4 teams, a clock of 30–120s, 1–8 turns per team, difficulty (easy, medium, hard or mix), passes per turn (none, 3, 5 or unlimited), 10 categories plus your own words (one per line, for inside jokes).
+- **Turn:** the handoff names the actor, then "Start the clock" shows the first word with its category. **Got it!** scores and deals the next word; **Pass** skips (limited); Pause hides the word; "Finish this turn early" also works.
+- **Results:** every word of the turn is listed, and tapping one flips it between scored and missed before "Next turn". A word still on screen when time ran out counts as a timeout and can be flipped too.
+- **Clock and saves:** the clock survives a refresh (it's stored as an end time), and running out ends the turn by itself. End game early, Start new game and Resume work like the other games.
+- **Word bank:** about 270 mainstream prompts in `src/lib/charades/words.ts`: Bollywood, Hollywood, South Indian hits, filmy characters and dialogues (Circuit, Poo, Chatur, Manjulika…), songs, TV and web series, famous faces, everyday actions, desi moments, animals and cricket. Words don't repeat until a category runs out.
+- **Verified:** a Playwright run on a phone-size screen played a whole two-team game: custom words, a refresh while paused, the pass limit, fixing a result, the clock expiring on its own, no repeated words, Start new game, End game mid-turn, and no sideways scroll at 320 to 768px.
+- **Code:** `src/store/charadesStore.ts`, `src/app/components/charades/*`, `src/lib/charades/words.ts`.
+
+### Dumb Charades: done (`/games/offline/dumb-charades` → `/play`)
+- **The classic household rules, kept separate from Charades:** one team picks a movie and tells it to a player on the *other* team, who acts it out while their own team guesses. There's no clock to beat. If they're stuck long enough, they give up and the roles swap.
+- **Phone flow (like Pictionary's opponent picking):** the picking team takes the phone → chooses from 3 titles (or writes their own, or shuffles for new ones) → hands it to the actor, who sees the title privately → "Start acting" starts a **stopwatch that counts up** → "They got it!" or "Give up" → results with the time taken. The picking team can change the movie before the actor sees it.
+- **Setup:** 2–4 teams (with 3+, each team picks for the next one round the circle), 1–8 turns per team, a **give-up nudge** after 2, 3 or 5 minutes or never (a banner and a chime, never a cutoff), difficulty, categories (movies by default; "Everything" adds songs, TV, famous faces and so on), your own titles, and an optional **point for stumping** (the picking team scores when the actor's team gives up).
+- **Signals cheat sheet** on the actor's screen, and in the rules: movie (crank a camera), song, TV show, number of words, which word, syllables, sounds like, tiny word, longer or shorter, right track.
+- **Scoring and recap:** a point per guessed movie, plus an "Oops" correction on the result. Game over shows a fastest-guess stat and every movie with its time.
+- **Mascot:** a new mango, so every game still has its own.
+- **Charades is unchanged** (rapid-fire against a clock); only its one-line tagline now says "Rapid-fire" so the two are easy to tell apart.
+- **Search:** a "How do you play dumb charades?" FAQ with a link, and "dumb charades" keywords (it was a very common Google India autocomplete).
+- **Verified:** a Playwright run on a phone-size screen played a whole two-team game: title picking, shuffling, changing the movie, a written-in title, signals sheet, stopwatch counting up, pause, refresh mid-turn, the nudge appearing after 2 minutes (with the clock still right after a reload), guessed and gave-up results with the stump point, the "Oops" flip, game over, Start new game, End game, and no sideways scroll at 320 to 768px.
+- **Code:** `src/store/dumbCharadesStore.ts`, `src/app/components/dumb-charades/*`; it shares the word bank in `src/lib/charades/words.ts` with Charades.
 
 ### Top 9 (Family Feud style): nearly done (`/games/top-9` → `/play`)
 - **Two ways to play:**
@@ -133,7 +156,7 @@ _Last updated: 2026-09-30. Nothing is committed yet: all of the work below is st
 
 ## Later
 - [ ] **Pass the Bomb:** still loose tools (a word deck + a "fuse" timer). Needs a full play mode following the play-mode structure.
-- [ ] **Remaining in-person games** need play modes: Mafia / Werewolf (role dealer, night-phase narrator), Charades (can reuse the Pictionary flow), Two Truths & a Lie, Hot Seat (score tracker), Categories (category spinner).
+- [ ] **Remaining in-person games** need play modes: Mafia / Werewolf (role dealer, night-phase narrator), Two Truths & a Lie, Hot Seat (score tracker, can reuse the Charades rapid-fire flow), Categories (category spinner).
 - [ ] **Tidy-up:** `src/store/gameStore.ts`, `src/lib/mongoose.ts` and `src/models/Top9Question.ts` are unused leftovers from the first setup. The Top 9 API no longer uses MongoDB.
 
 ## Notes

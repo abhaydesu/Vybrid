@@ -23,6 +23,8 @@ const LOOK: Record<CharacterKind, { kind: MascotKind; mood: MascotMood; fuse?: b
   artist: { kind: "dice", mood: "happy" },
   // Imposter: a cutting chai with a secret
   fibber: { kind: "chai", mood: "wink" },
+  // Dumb Charades: a mango, the king of every baithak
+  mimer: { kind: "mango", mood: "cheer" },
   // Two Truths & a Lie: a jalebi, all twists
   teller: { kind: "jalebi", mood: "shifty" },
   // Hot Seat: a golgappa feeling the spice
