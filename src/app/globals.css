@@ -12,8 +12,11 @@
   --color-ink-soft: #585858;
   --color-line: #e7e5e0;
 
-  --font-display: var(--font-baloo), ui-rounded, system-ui, sans-serif;
-  --font-sans: var(--font-mukta), system-ui, sans-serif;
+  /* Next.js injects --font-gued / --font-poppins on <html> at runtime.
+     Tailwind emits @theme vars as :root custom properties, so var() here
+     resolves correctly once the page loads. */
+  --font-display: var(--font-gued), system-ui, sans-serif;
+  --font-sans: var(--font-poppins), system-ui, sans-serif;
 
   --ease-bounce: cubic-bezier(0.3, 0.7, 0.4, 1.5);
 }

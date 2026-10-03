@@ -1,20 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import { Baloo_2, Kalam, Mukta } from "next/font/google";
+import localFont from "next/font/local";
+import { Kalam, Poppins } from "next/font/google";
 
 import { SITE } from "@/lib/site";
 import Footer from "./components/Footer";
 import NavDock from "./components/NavDock";
 import "./globals.css";
 
-// Both from Ek Type, an Indian foundry: Baloo 2 is warm and rounded for
-// headings, Mukta is a calm humanist sans for reading. Both cover Devanagari.
-const baloo = Baloo_2({
-  variable: "--font-baloo",
-  subsets: ["latin"],
+const gued = localFont({
+  src: [
+    { path: "../../public/gued/Gued.otf",         weight: "400", style: "normal" },
+    { path: "../../public/gued/Gued - Bold.otf",  weight: "700", style: "normal" },
+  ],
+  variable: "--font-gued",
   display: "swap",
+  fallback: ["system-ui", "sans-serif"],
 });
 
-// Handwritten notes, also by an Indian foundry (Indian Type Foundry).
 const kalam = Kalam({
   variable: "--font-kalam",
   subsets: ["latin"],
@@ -22,8 +24,8 @@ const kalam = Kalam({
   display: "swap",
 });
 
-const mukta = Mukta({
-  variable: "--font-mukta",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
@@ -81,7 +83,7 @@ export default function RootLayout({
 }>) {
   return (
     // Font variables go on <html> so the theme tokens on :root can see them.
-    <html lang={SITE.language} className={`${baloo.variable} ${mukta.variable} ${kalam.variable}`}>
+    <html lang={SITE.language} className={`${gued.variable} ${poppins.variable} ${kalam.variable}`}>
       <body>
         <NavDock />
         {children}
