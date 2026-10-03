@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Kalam, Poppins } from "next/font/google";
 
 import { SITE } from "@/lib/site";
+import Analytics from "./components/Analytics";
 import Footer from "./components/Footer";
 import NavDock from "./components/NavDock";
 import "./globals.css";
@@ -85,6 +86,7 @@ export default function RootLayout({
     // Font variables go on <html> so the theme tokens on :root can see them.
     <html lang={SITE.language} className={`${gued.variable} ${poppins.variable} ${kalam.variable}`}>
       <body>
+        <Analytics />
         <NavDock />
         {children}
         <Footer />

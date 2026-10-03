@@ -2,6 +2,7 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 
+import { useTrackGame } from "@/lib/analytics/useTrackGame";
 import { useWakeLock } from "@/lib/useWakeLock";
 import { currentTeam, pickingTeam, useDumbCharades } from "@/store/dumbCharadesStore";
 import Studs from "../Studs";
@@ -33,6 +34,7 @@ export default function DumbCharadesGame() {
 
   const inGame = phase !== "setup" && phase !== "gameover";
   useWakeLock(hydrated && inGame);
+  useTrackGame("dumb-charades", phase, hydrated);
 
   if (!hydrated) {
     return (

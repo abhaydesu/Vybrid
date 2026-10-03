@@ -2,6 +2,7 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 
+import { useTrackGame } from "@/lib/analytics/useTrackGame";
 import { useWakeLock } from "@/lib/useWakeLock";
 import { useImposter } from "@/store/imposterStore";
 import Studs from "../Studs";
@@ -35,6 +36,7 @@ export default function ImposterGame() {
   const phase = useImposter((s) => s.phase);
   const inGame = phase !== "setup" && phase !== "gameover";
   useWakeLock(hydrated && inGame);
+  useTrackGame("imposter", phase, hydrated);
 
   if (!hydrated) {
     return (
